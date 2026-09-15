@@ -1,0 +1,12 @@
+#root {
+  min-height: 100vh;
+}
+
+.route-loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  color: #526256;
+  background: #dfe8d8;
+}
