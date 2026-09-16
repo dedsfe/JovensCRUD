@@ -22,10 +22,21 @@
 .actions { display: flex; gap: 4px; }
 .actions button { min-height: 44px; padding: 0 12px; color: var(--color-ink-secondary); font-size: 13px; font-weight: 650; background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
 .actions button:hover { color: var(--color-blue-pressed); background: var(--color-blue-soft); } .actions button:disabled { cursor: wait; opacity: 0.5; }
+.actions .removeAction:hover { color: var(--color-red); background: var(--color-surface-subtle); }
+.confirmBackdrop { position: fixed; z-index: 1200; inset: 0; display: grid; padding: 24px; place-items: center; background: rgba(0, 0, 0, 0.46); }
+.confirmDialog { width: min(100%, 470px); padding: 30px; color: var(--color-ink); background: var(--color-canvas); border-radius: var(--radius-xl); box-shadow: var(--shadow-overlay); }
+.confirmDialog h2 { margin: 0; font-size: 25px; letter-spacing: -0.03em; }
+.confirmDialog p { margin: 12px 0 26px; color: var(--color-ink-secondary); line-height: 1.55; }
+.confirmActions { display: flex; gap: 10px; justify-content: flex-end; }
+.confirmActions button { min-height: 48px; padding: 0 17px; color: var(--color-ink-secondary); font-weight: 680; background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
+.confirmActions button:hover { background: var(--color-surface-subtle); }
+.confirmActions .deleteButton { color: #fff; background: var(--color-red); }
+.confirmActions .deleteButton:hover { background: var(--color-red); filter: brightness(0.88); }
+.confirmActions button:disabled { cursor: wait; opacity: 0.58; }
 .emptyState { padding: 62px 24px; text-align: center; background: var(--color-surface); border-radius: var(--radius-lg); }
 .emptyState strong { font-size: var(--text-xl); } .emptyState p { margin: 8px 0 22px; color: var(--color-ink-secondary); }
 .skeleton { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 14px; min-height: 76px; padding: 14px; align-items: center; background: var(--color-surface); border-radius: var(--radius-lg); }
 .skeleton span:first-child { width: 42px; height: 42px; background: var(--color-surface-pressed); border-radius: 50%; }
 .skeleton span:last-child { width: min(240px, 70%); height: 14px; background: var(--color-surface-pressed); border-radius: 7px; }
-@media (max-width: 760px) { .page { padding: 28px 16px 40px; } .header { align-items: flex-start; flex-direction: column; } .header > button { width: 100%; } .workspace { margin-top: 28px; padding: 20px 14px; } .workspaceHeading { display: grid; } .workspaceHeading > span { text-align: left; } .fieldRow { grid-template-columns: minmax(0, 1fr) auto; gap: 11px; } .fieldStatus { grid-column: 1; } .actions { grid-column: 1 / -1; } .actions button { flex: 1; } }
+@media (max-width: 760px) { .page { padding: 28px 16px 40px; } .header { align-items: flex-start; flex-direction: column; } .header > button { width: 100%; } .workspace { margin-top: 28px; padding: 20px 14px; } .workspaceHeading { display: grid; } .workspaceHeading > span { text-align: left; } .fieldRow { grid-template-columns: minmax(0, 1fr) auto; gap: 11px; } .fieldStatus { grid-column: 1; } .actions { grid-column: 1 / -1; flex-wrap: wrap; } .actions button { flex: 1; } .confirmDialog { padding: 24px 20px; } .confirmActions { align-items: stretch; flex-direction: column-reverse; } }
 @media (max-width: 380px) { .fieldRow { grid-template-columns: minmax(0, 1fr); } .fieldStatus, .actions { grid-column: 1; } }

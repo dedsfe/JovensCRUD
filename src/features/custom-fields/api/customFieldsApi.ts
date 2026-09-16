@@ -70,4 +70,11 @@ export const customFieldsApi = {
     if (error || !data) throw new Error(isActive ? 'Não foi possível reativar o campo.' : 'Não foi possível desativar o campo.')
     return mapCustomField(data as CustomFieldRow)
   },
+
+  remove: async (field: CustomField): Promise<void> => {
+    const { error } = await supabase.rpc('delete_youth_custom_field', {
+      p_field_id: field.id,
+    })
+    if (error) throw new Error('Não foi possível apagar o campo.')
+  },
 }

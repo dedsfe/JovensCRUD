@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useToast } from '../../../components/toast/useToast'
 import { useYouths } from '../../youth/context/useYouths'
 import { customFieldsApi } from '../api/customFieldsApi'
@@ -7,6 +8,68 @@ import { customFieldTypeLabels } from '../helpers/customFieldHelpers'
 import type { CustomField, CustomFieldDraft } from '../types/customField'
 import styles from './CustomFieldsPage.module.css'
 
+interface DeleteFieldDialogProps {
+  field: CustomField | null
+  isDeleting: boolean
+  onCancel: () => void
+  onConfirm: () => void
+}
+
+const DeleteFieldDialog: React.FC<DeleteFieldDialogProps> = ({
+  field,
+  isDeleting,
+  onCancel,
+  onConfirm,
+}) => {
+  const titleId = useId()
+  const cancelRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!field) return
+    const frame = requestAnimationFrame(() => cancelRef.current?.focus())
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape' && !isDeleting) onCancel()
+      if (event.key !== 'Tab' || !dialogRef.current) return
+      const items = Array.from(dialogRef.current.querySelectorAll<HTMLButtonElement>('button:not([disabled])'))
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last?.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first?.focus()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      cancelAnimationFrame(frame)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [field, isDeleting, onCancel])
+
+  if (!field) return null
+
+  return createPortal(
+    <div className={styles.confirmBackdrop} onMouseDown={(event) => {
+      if (event.target === event.currentTarget && !isDeleting) onCancel()
+    }}>
+      <section ref={dialogRef} className={styles.confirmDialog} role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+        <h2 id={titleId}>Apagar “{field.label}”?</h2>
+        <p>O campo e todas as respostas preenchidas nele serão apagados definitivamente. Essa ação não pode ser desfeita.</p>
+        <div className={styles.confirmActions}>
+          <button ref={cancelRef} type="button" disabled={isDeleting} onClick={onCancel}>Cancelar</button>
+          <button className={styles.deleteButton} type="button" disabled={isDeleting} onClick={onConfirm}>
+            {isDeleting ? 'Apagando...' : 'Apagar definitivamente'}
+          </button>
+        </div>
+      </section>
+    </div>,
+    document.body,
+  )
+}
+
 const CustomFieldsPage: React.FC = () => {
   const { access, customFields, isLoading, error, refresh } = useYouths()
   const { showToast, updateToast } = useToast()
@@ -14,6 +77,8 @@ const CustomFieldsPage: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [busyFieldId, setBusyFieldId] = useState<string | null>(null)
+  const [fieldPendingDelete, setFieldPendingDelete] = useState<CustomField | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const isAdmin = access?.role === 'admin' && access.status === 'active'
 
   const openCreate = (): void => { setSelectedField(null); setIsDialogOpen(true) }
@@ -55,6 +120,20 @@ const CustomFieldsPage: React.FC = () => {
     } finally { setBusyFieldId(null) }
   }, [refresh, showToast, updateToast])
 
+  const handleDelete = useCallback(async (): Promise<void> => {
+    if (!fieldPendingDelete) return
+    setIsDeleting(true)
+    const toastId = showToast({ message: 'Apagando campo e respostas...', tone: 'loading' })
+    try {
+      await customFieldsApi.remove(fieldPendingDelete)
+      await refresh()
+      updateToast(toastId, { message: 'Campo e respostas apagados definitivamente.', tone: 'success' })
+      setFieldPendingDelete(null)
+    } catch (deleteError) {
+      updateToast(toastId, { message: deleteError instanceof Error ? deleteError.message : 'Não foi possível apagar o campo.', tone: 'error' })
+    } finally { setIsDeleting(false) }
+  }, [fieldPendingDelete, refresh, showToast, updateToast])
+
   const activeCount = customFields.filter((field) => field.isActive).length
 
   return (
@@ -92,6 +171,8 @@ const CustomFieldsPage: React.FC = () => {
             <div className={styles.actions}>
               <button type="button" onClick={() => openEdit(field)}>Editar</button>
               <button type="button" disabled={busyFieldId === field.id} onClick={() => void handleToggleActive(field)}>{field.isActive ? 'Desativar' : 'Reativar'}</button>
+              <button className={styles.removeAction} type="button" disabled={busyFieldId === field.id}
+                onClick={() => setFieldPendingDelete(field)}>Apagar</button>
             </div>
           </article>)}
         </div>
@@ -99,6 +180,9 @@ const CustomFieldsPage: React.FC = () => {
 
       <CustomFieldDialog field={selectedField} isOpen={isDialogOpen} isSaving={isSaving}
         onClose={() => { if (!isSaving) setIsDialogOpen(false) }} onSave={handleSave} />
+      <DeleteFieldDialog field={fieldPendingDelete} isDeleting={isDeleting}
+        onCancel={() => { if (!isDeleting) setFieldPendingDelete(null) }}
+        onConfirm={() => void handleDelete()} />
     </div>
   )
 }

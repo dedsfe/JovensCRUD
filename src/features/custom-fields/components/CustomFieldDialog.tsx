@@ -17,7 +17,7 @@ const CustomFieldDialog: React.FC<Props> = ({ field, isOpen, isSaving, onClose, 
   const panelRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const [draft, setDraft] = useState<CustomFieldDraft>(emptyCustomFieldDraft)
-  const [optionsText, setOptionsText] = useState('')
+  const [optionRows, setOptionRows] = useState<string[]>(['', ''])
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const CustomFieldDialog: React.FC<Props> = ({ field, isOpen, isSaving, onClose, 
       : { ...emptyCustomFieldDraft, options: [] }
     queueMicrotask(() => {
       setDraft(nextDraft)
-      setOptionsText(nextDraft.options.join('\n'))
+      setOptionRows(nextDraft.options.length >= 2 ? nextDraft.options : ['', ''])
       setErrors({})
     })
     const frame = requestAnimationFrame(() => closeRef.current?.focus())
@@ -57,7 +57,7 @@ const CustomFieldDialog: React.FC<Props> = ({ field, isOpen, isSaving, onClose, 
     event.preventDefault()
     const normalized: CustomFieldDraft = {
       ...draft,
-      options: optionsText.split('\n').map((item) => item.trim()).filter(Boolean),
+      options: optionRows.map((item) => item.trim()).filter(Boolean),
     }
     const nextErrors = validateCustomFieldDraft(normalized)
     setErrors(nextErrors)
@@ -101,13 +101,34 @@ const CustomFieldDialog: React.FC<Props> = ({ field, isOpen, isSaving, onClose, 
                 <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" /></svg>
               </span>
             </label>
-            {draft.type === 'select' && <label className={styles.field}>
-              <span>Opções</span>
-              <textarea data-field="options" value={optionsText} rows={5} maxLength={2000} disabled={isSaving}
-                placeholder={'Louvor\nMídia\nRecepção'} aria-invalid={Boolean(errors.options)}
-                onChange={(event) => { setOptionsText(event.target.value); setErrors((current) => ({ ...current, options: '' })) }} />
-              <em>Uma opção por linha.</em>{errors.options && <small role="alert">{errors.options}</small>}
-            </label>}
+            {draft.type === 'select' && <fieldset className={styles.optionField}>
+              <legend>Opções da lista</legend>
+              <div className={styles.optionList}>
+                {optionRows.map((option, index) => (
+                  <div className={styles.optionRow} key={index}>
+                    <label htmlFor={`${titleId}-option-${index}`}>Opção {index + 1}</label>
+                    <input id={`${titleId}-option-${index}`} data-field={index === 0 ? 'options' : undefined}
+                      type="text" value={option} maxLength={120}
+                      disabled={isSaving} placeholder={index === 0 ? 'Ex.: Louvor' : 'Ex.: Mídia'}
+                      aria-invalid={Boolean(errors.options)} onChange={(event) => {
+                        const nextValue = event.target.value
+                        setOptionRows((current) => current.map((item, itemIndex) => itemIndex === index ? nextValue : item))
+                        setErrors((current) => ({ ...current, options: '' }))
+                      }} />
+                    <button type="button" disabled={isSaving || optionRows.length <= 2}
+                      aria-label={`Remover opção ${index + 1}`} onClick={() => setOptionRows((current) => current.filter((_, itemIndex) => itemIndex !== index))}>
+                      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2m-6 0 .7 10h6.6L14 6M8.5 9v4M11.5 9v4" /></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button className={styles.addOptionButton} type="button" disabled={isSaving || optionRows.length >= 30}
+                onClick={() => setOptionRows((current) => [...current, ''])}>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg>
+                Adicionar opção
+              </button>
+              {errors.options && <small role="alert">{errors.options}</small>}
+            </fieldset>}
             <label className={styles.checkRow}>
               <input type="checkbox" checked={draft.required} disabled={isSaving}
                 onChange={(event) => setDraft((current) => ({ ...current, required: event.target.checked }))} />

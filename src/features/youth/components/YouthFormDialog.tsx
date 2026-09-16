@@ -19,7 +19,13 @@ import type {
   YouthFormErrors,
   YouthFormField,
 } from '../helpers/youthHelpers'
-import { validateCustomFieldValues } from '../../custom-fields/helpers/customFieldHelpers'
+import {
+  customDataForForm,
+  customDataForStorage,
+  formatCustomDateInput,
+  validateCustomFieldValues,
+} from '../../custom-fields/helpers/customFieldHelpers'
+import type { CustomField } from '../../custom-fields/types/customField'
 import styles from './YouthFormDialog.module.css'
 
 interface YouthFormDialogProps {
@@ -38,7 +44,7 @@ const emptyValues: YouthFormValues = {
   customData: {},
 }
 
-const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
+const valuesFromYouth = (youth: Youth | null, customFields: CustomField[]): YouthFormValues =>
   youth
     ? {
         fullName: youth.fullName,
@@ -49,7 +55,7 @@ const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
         phone: formatBrazilianPhone(youth.phone),
         status: youth.status === 'active' ? 'active' : 'inactive',
         notes: youth.notes ?? '',
-        customData: { ...youth.customData },
+        customData: customDataForForm(customFields, youth.customData),
       }
     : emptyValues
 
@@ -104,7 +110,7 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
     previousFocusRef.current = document.activeElement as HTMLElement | null
     queueMicrotask(() => {
       if (!isCurrent) return
-      setValues(valuesFromYouth(youth))
+      setValues(valuesFromYouth(youth, customFields))
       setPhoto(null)
       setRemovePhoto(false)
       setFieldErrors({})
@@ -124,7 +130,7 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
       window.cancelAnimationFrame(focusFrame)
       previousFocusRef.current?.focus()
     }
-  }, [isOpen, youth])
+  }, [customFields, isOpen, youth])
 
   useEffect(() => {
     if (!isOpen) return
@@ -292,7 +298,14 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
     })
 
     try {
-      const input = { values, photo, removePhoto }
+      const input = {
+        values: {
+          ...values,
+          customData: customDataForStorage(activeCustomFields, values.customData),
+        },
+        photo,
+        removePhoto,
+      }
       if (youth) await updateYouth(youth, input)
       else await createYouth(input)
 
@@ -623,10 +636,13 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
                             </span>
                           ) : (
                             <input {...commonProps} className={customControlClass(field.id)}
-                              type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}
+                              type={field.type === 'number' ? 'number' : 'text'}
                               maxLength={field.type === 'text' ? 200 : undefined}
-                              inputMode={field.type === 'number' ? 'decimal' : undefined}
-                              onChange={(event) => updateCustomField(field.id, event.target.value)} />
+                              inputMode={field.type === 'number' ? 'decimal' : field.type === 'date' ? 'numeric' : undefined}
+                              placeholder={field.type === 'date' ? 'DD/MM/AAAA' : undefined}
+                              onChange={(event) => updateCustomField(field.id, field.type === 'date'
+                                ? formatCustomDateInput(event.target.value)
+                                : event.target.value)} />
                           )}
                           {customFieldErrors[field.id] && <small id={errorId} className={styles.fieldError} role="alert">{customFieldErrors[field.id]}</small>}
                         </label>
