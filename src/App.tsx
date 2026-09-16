@@ -15,6 +15,9 @@ const DashboardPage = lazy(
   () => import('./features/dashboard/routes/DashboardPage'),
 )
 const AccessPage = lazy(() => import('./features/access/routes/AccessPage'))
+const CustomFieldsPage = lazy(
+  () => import('./features/custom-fields/routes/CustomFieldsPage'),
+)
 const AccountPage = lazy(() => import('./features/account/routes/AccountPage'))
 
 function App() {
@@ -50,6 +53,7 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/jovens" element={<YouthDirectoryPage />} />
               <Route path="/acessos" element={<AccessPage />} />
+              <Route path="/campos" element={<CustomFieldsPage />} />
               <Route path="/conta" element={<AccountPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/login" replace />} />

@@ -13,7 +13,7 @@ import {
 } from '../../lib/motion'
 import styles from './AppShell.module.css'
 
-type NavigationIcon = 'home' | 'people' | 'access'
+type NavigationIcon = 'home' | 'people' | 'access' | 'fields'
 
 interface NavigationItem {
   label: string
@@ -25,6 +25,7 @@ const navigation: NavigationItem[] = [
   { label: 'Início', path: '/dashboard', icon: 'home' },
   { label: 'Jovens', path: '/jovens', icon: 'people' },
   { label: 'Acessos', path: '/acessos', icon: 'access' },
+  { label: 'Campos', path: '/campos', icon: 'fields' },
 ]
 
 const NavigationGlyph: React.FC<{ icon: NavigationIcon }> = ({ icon }) => {
@@ -47,6 +48,15 @@ const NavigationGlyph: React.FC<{ icon: NavigationIcon }> = ({ icon }) => {
     )
   }
 
+  if (icon === 'fields') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 5h14v14H5Z" />
+        <path d="M8.5 9h7M8.5 12h4M8.5 15h6" />
+      </svg>
+    )
+  }
+
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="8.5" cy="8" r="3" />
@@ -65,7 +75,7 @@ const NavigationLinks: React.FC<NavigationLinksProps> = ({ scope }) => {
   const { access } = useYouths()
   const visibleNavigation = access?.role === 'admin'
     ? navigation
-    : navigation.filter((item) => item.path !== '/acessos')
+    : navigation.filter((item) => item.path !== '/acessos' && item.path !== '/campos')
 
   return visibleNavigation.map((item) => (
     <NavLink

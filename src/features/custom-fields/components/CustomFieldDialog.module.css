@@ -1,0 +1,29 @@
+.backdrop { position: fixed; z-index: 1100; inset: 0; display: grid; padding: 24px; place-items: center; background: rgba(0, 0, 0, 0.42); }
+.panel { width: min(100%, 560px); max-height: calc(100dvh - 48px); overflow-y: auto; color: var(--color-ink); background: var(--color-canvas); border-radius: var(--radius-xl); box-shadow: var(--shadow-overlay); }
+.header { display: flex; gap: 20px; padding: 28px 30px 18px; align-items: flex-start; justify-content: space-between; }
+.header h2 { margin: 0; font-size: 28px; letter-spacing: -0.035em; }
+.header p { margin: 7px 0 0; color: var(--color-ink-secondary); font-size: var(--text-sm); }
+.header button { display: grid; width: 44px; height: 44px; flex: 0 0 auto; padding: 0; place-items: center; color: var(--color-ink-secondary); background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
+.header button:hover { background: var(--color-surface-pressed); }
+.header svg { width: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 1.8; }
+.body { display: grid; gap: 18px; padding: 4px 30px 8px; }
+.field { display: grid; gap: 7px; }
+.field > span:first-child { font-size: var(--text-sm); font-weight: 650; }
+.field input, .field select, .field textarea { width: 100%; min-height: 52px; padding: 0 15px; color: var(--color-ink); background: var(--color-canvas); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); outline: 0; font-size: 16px; }
+.field textarea { min-height: 120px; padding-block: 13px; line-height: 1.45; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--color-blue); outline: 4px solid var(--focus-outline); }
+.field [aria-invalid='true'] { border-color: var(--color-red); }
+.field small { color: var(--color-red); font-size: 12px; font-weight: 610; }
+.field em { color: var(--color-ink-tertiary); font-size: 12px; font-style: normal; }
+.selectControl { position: relative; }
+.selectControl select { appearance: none; padding-right: 46px; }
+.selectControl svg { position: absolute; top: 50%; right: 16px; width: 20px; pointer-events: none; fill: none; stroke: var(--color-ink-secondary); stroke-linecap: round; stroke-width: 1.8; transform: translateY(-50%); }
+.checkRow { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; padding: 16px; align-items: start; background: var(--color-surface-subtle); border-radius: var(--radius-lg); cursor: pointer; }
+.checkRow input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--color-blue); }
+.checkRow span { display: grid; gap: 3px; } .checkRow strong { font-size: var(--text-sm); } .checkRow small { color: var(--color-ink-secondary); line-height: 1.4; }
+.footer { display: flex; gap: 12px; padding: 20px 30px 28px; justify-content: flex-end; }
+.footer button { min-height: 50px; padding: 0 20px; color: var(--color-ink-secondary); font-weight: 680; background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
+.footer button:hover { background: var(--color-surface-subtle); }
+.footer .saveButton { min-width: 150px; color: #fff; background: var(--color-blue); box-shadow: var(--shadow-control); }
+.footer .saveButton:hover { background: var(--color-blue-hover); } .footer button:disabled { cursor: wait; opacity: 0.58; }
+@media (max-width: 600px) { .backdrop { padding: 0; place-items: end center; } .panel { max-height: calc(100dvh - 12px); border-radius: 28px 28px 0 0; } .header { padding: 24px 20px 16px; } .body { padding-inline: 20px; } .footer { padding: 16px 20px max(18px, env(safe-area-inset-bottom)); } .footer .saveButton { min-width: 0; flex: 1; } }

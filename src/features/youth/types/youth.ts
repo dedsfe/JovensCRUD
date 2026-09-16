@@ -1,3 +1,5 @@
+import type { YouthCustomData } from '../../custom-fields/types/customField'
+
 export type YouthStatus = 'active' | 'inactive' | 'archived'
 
 export interface Youth {
@@ -12,6 +14,7 @@ export interface Youth {
   photoPath: string | null
   photoUrl: string | null
   notes: string | null
+  customData: YouthCustomData
   createdAt: string
 }
 
@@ -22,6 +25,7 @@ export interface YouthFormValues {
   phone: string
   status: 'active' | 'inactive'
   notes: string
+  customData: YouthCustomData
 }
 
 export interface YouthMutationInput {

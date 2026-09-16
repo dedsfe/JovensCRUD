@@ -9,14 +9,17 @@ Os cargos disponíveis são:
 - `leader`: gerencia o diretório dos jovens, sem administrar acessos.
 - `admin`: gerencia o diretório, aprova contas e altera cargos.
 
+Administradores também podem criar e editar os campos personalizados do cadastro.
+Líderes visualizam e preenchem somente os campos ativos; campos desativados deixam
+de aparecer no formulário, mas seus valores permanecem preservados.
+
 O cargo e o status são definidos pelo trigger do banco. Valores enviados pelo
 cadastro, inclusive em `user_metadata`, não são usados para conceder acesso.
 
 ## Aplicar
 
-Abra o SQL Editor do projeto Supabase e execute o conteúdo de:
-
-`supabase/migrations/20260915150000_secure_auth_and_youth.sql`
+Abra o SQL Editor do projeto Supabase e execute as migrations da pasta
+`supabase/migrations` em ordem cronológica.
 
 Alternativamente, autentique o CLI com uma conta que tenha acesso ao projeto,
 faça o link e execute `supabase db push`.

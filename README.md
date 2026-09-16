@@ -4,7 +4,9 @@ Diretório mobile-first para organizar os jovens da igreja.
 
 ## Estado atual
 
-A primeira base contém uma demonstração visual da listagem, busca e filtros com dados fictícios. Autenticação, banco de dados e upload de fotos ainda não estão conectados.
+Aplicação conectada ao Supabase com autenticação, níveis de acesso, diretório de
+jovens, fotos privadas, ficha pastoral, observações, aniversários e campos
+personalizados administráveis sem alteração de código.
 
 ## Desenvolvimento
 
@@ -28,6 +30,11 @@ npm run build
 - CSS Modules
 - Motion
 
-## Próxima etapa
+## Banco de dados
 
-Conectar Supabase para autenticação administrativa, persistência dos cadastros e armazenamento de fotos.
+As alterações de estrutura e segurança ficam em `supabase/migrations`. Em um
+projeto Supabase vinculado, aplique as migrations pendentes com:
+
+```bash
+supabase db push
+```

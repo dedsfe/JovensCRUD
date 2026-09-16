@@ -1,8 +1,10 @@
 import { createContext } from 'react'
 import type { Youth, YouthAccess, YouthMutationInput } from '../types/youth'
+import type { CustomField } from '../../custom-fields/types/customField'
 
 export interface YouthContextValue {
   youths: Youth[]
+  customFields: CustomField[]
   access: YouthAccess | null
   isLoading: boolean
   error: string | null

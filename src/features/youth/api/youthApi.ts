@@ -11,6 +11,7 @@ import type {
   YouthMutationInput,
   YouthStatus,
 } from '../types/youth'
+import { cleanCustomData, normalizeCustomData } from '../../custom-fields/helpers/customFieldHelpers'
 
 const PHOTO_BUCKET = 'youth-photos'
 const PHOTO_URL_TTL_SECONDS = 60 * 60
@@ -24,6 +25,7 @@ interface YouthRow {
   status: YouthStatus
   photo_path: string | null
   notes: string | null
+  custom_data: unknown
   created_at: string
 }
 
@@ -82,6 +84,7 @@ const mapYouth = async (row: YouthRow): Promise<Youth> => ({
   photoPath: row.photo_path,
   photoUrl: await createPhotoUrl(row.photo_path),
   notes: row.notes ?? null,
+  customData: normalizeCustomData(row.custom_data),
   createdAt: row.created_at,
 })
 
@@ -92,10 +95,11 @@ const toDatabaseValues = (values: YouthFormValues) => ({
   phone: values.phone.trim() || null,
   status: values.status,
   notes: values.notes.trim() || null,
+  custom_data: cleanCustomData(values.customData),
 })
 
 const youthSelection =
-  'id, full_name, preferred_name, birth_date, phone, status, photo_path, notes, created_at'
+  'id, full_name, preferred_name, birth_date, phone, status, photo_path, notes, custom_data, created_at'
 
 export const youthApi = {
   getAccess: async (userId: string): Promise<YouthAccess> => {

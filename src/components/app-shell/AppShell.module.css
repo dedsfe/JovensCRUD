@@ -296,9 +296,8 @@
 
   .bottomNavigation {
     z-index: 2;
-    display: grid;
+    display: flex;
     grid-row: 3;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     padding: 7px max(10px, env(safe-area-inset-right)) env(safe-area-inset-bottom)
       max(10px, env(safe-area-inset-left));
     background: var(--color-canvas);
@@ -307,6 +306,8 @@
 
   .bottomNavigation .navLink,
   .bottomNavigation .activeLink {
+    min-width: 0;
+    flex: 1;
     gap: 3px;
     min-height: 56px;
     padding: 5px;

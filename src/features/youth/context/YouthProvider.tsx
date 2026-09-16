@@ -4,10 +4,13 @@ import { useAuth } from '../../auth/context/useAuth'
 import { youthApi } from '../api/youthApi'
 import type { Youth, YouthAccess, YouthMutationInput } from '../types/youth'
 import { YouthContext } from './YouthContext'
+import { customFieldsApi } from '../../custom-fields/api/customFieldsApi'
+import type { CustomField } from '../../custom-fields/types/customField'
 
 export const YouthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { user } = useAuth()
   const [youths, setYouths] = useState<Youth[]>([])
+  const [customFields, setCustomFields] = useState<CustomField[]>([])
   const [access, setAccess] = useState<YouthAccess | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -24,10 +27,16 @@ export const YouthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       if (!nextAccess.canManage) {
         setYouths([])
+        setCustomFields([])
         return
       }
 
-      setYouths(await youthApi.list())
+      const [nextYouths, nextCustomFields] = await Promise.all([
+        youthApi.list(),
+        customFieldsApi.list(),
+      ])
+      setYouths(nextYouths)
+      setCustomFields(nextCustomFields)
     } catch (loadError) {
       setError(
         loadError instanceof Error
@@ -78,6 +87,7 @@ export const YouthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const value = useMemo(
     () => ({
       youths,
+      customFields,
       access,
       isLoading,
       error,
@@ -86,7 +96,7 @@ export const YouthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       updateYouth,
       setYouthStatus,
     }),
-    [access, createYouth, error, isLoading, refresh, setYouthStatus, updateYouth, youths],
+    [access, createYouth, customFields, error, isLoading, refresh, setYouthStatus, updateYouth, youths],
   )
 
   return <YouthContext.Provider value={value}>{children}</YouthContext.Provider>

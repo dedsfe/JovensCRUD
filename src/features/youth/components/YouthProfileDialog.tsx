@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useToast } from '../../../components/toast/useToast'
+import { useYouths } from '../context/useYouths'
 import {
   motionDuration,
   motionEase,
@@ -90,6 +91,7 @@ const YouthProfileDialog: React.FC<YouthProfileDialogProps> = ({
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const reduceMotion = useReducedMotion()
   const { showToast } = useToast()
+  const { customFields } = useYouths()
 
   useEffect(() => {
     if (!isOpen) return
@@ -122,6 +124,20 @@ const YouthProfileDialog: React.FC<YouthProfileDialogProps> = ({
 
   const formattedBirthDate = formatBirthDate(youth?.birthDate)
   const formattedJoinDate = formatJoinDate(youth?.createdAt)
+  const populatedCustomFields = useMemo(
+    () =>
+      customFields.filter(
+        (field) => field.isActive && Boolean(youth?.customData[field.id]?.trim()),
+      ),
+    [customFields, youth],
+  )
+
+  const formatCustomValue = (fieldId: string, type: string): string => {
+    const value = youth?.customData[fieldId] ?? ''
+    if (type === 'boolean') return value === 'true' ? 'Sim' : 'Não'
+    if (type === 'date') return formatBirthDate(value)
+    return value
+  }
 
   const handleCopyContact = async (): Promise<void> => {
     if (!youth) return
@@ -320,6 +336,13 @@ const YouthProfileDialog: React.FC<YouthProfileDialogProps> = ({
                       <strong>{formattedJoinDate}</strong>
                     </div>
                   )}
+
+                  {populatedCustomFields.map((field) => (
+                    <div className={styles.infoBlock} key={field.id}>
+                      <span>{field.label}</span>
+                      <strong>{formatCustomValue(field.id, field.type)}</strong>
+                    </div>
+                  ))}
                 </div>
               </div>
 

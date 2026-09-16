@@ -19,6 +19,7 @@ import type {
   YouthFormErrors,
   YouthFormField,
 } from '../helpers/youthHelpers'
+import { validateCustomFieldValues } from '../../custom-fields/helpers/customFieldHelpers'
 import styles from './YouthFormDialog.module.css'
 
 interface YouthFormDialogProps {
@@ -34,6 +35,7 @@ const emptyValues: YouthFormValues = {
   phone: '',
   status: 'active',
   notes: '',
+  customData: {},
 }
 
 const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
@@ -47,6 +49,7 @@ const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
         phone: formatBrazilianPhone(youth.phone),
         status: youth.status === 'active' ? 'active' : 'inactive',
         notes: youth.notes ?? '',
+        customData: { ...youth.customData },
       }
     : emptyValues
 
@@ -61,12 +64,13 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const reduceMotion = useReducedMotion()
-  const { youths, createYouth, updateYouth } = useYouths()
+  const { youths, customFields, createYouth, updateYouth } = useYouths()
   const { showToast, updateToast } = useToast()
   const [values, setValues] = useState<YouthFormValues>(emptyValues)
   const [photo, setPhoto] = useState<File | null>(null)
   const [removePhoto, setRemovePhoto] = useState(false)
   const [fieldErrors, setFieldErrors] = useState<YouthFormErrors>({})
+  const [customFieldErrors, setCustomFieldErrors] = useState<Record<string, string>>({})
   const [photoError, setPhotoError] = useState<string | null>(null)
   const [formError, setFormError] = useState<string | null>(null)
   const [shakingField, setShakingField] = useState<YouthFormField | null>(null)
@@ -76,6 +80,10 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
   )
   const [deactivatePending, setDeactivatePending] = useState(false)
   const warningsAcknowledgedRef = useRef(false)
+  const activeCustomFields = useMemo(
+    () => customFields.filter((field) => field.isActive),
+    [customFields],
+  )
 
   const photoPreview = useMemo(() => {
     if (photo) return URL.createObjectURL(photo)
@@ -100,6 +108,7 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
       setPhoto(null)
       setRemovePhoto(false)
       setFieldErrors({})
+      setCustomFieldErrors({})
       setPhotoError(null)
       setFormError(null)
       setShakingField(null)
@@ -177,6 +186,23 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
     })
   }
 
+  const updateCustomField = (fieldId: string, value: string): void => {
+    setValues((current) => ({
+      ...current,
+      customData: { ...current.customData, [fieldId]: value },
+    }))
+    setCustomFieldErrors((current) => {
+      if (!current[fieldId]) return current
+      const nextErrors = { ...current }
+      delete nextErrors[fieldId]
+      return nextErrors
+    })
+    setFormError(null)
+  }
+
+  const customControlClass = (fieldId: string): string =>
+    [styles.control, customFieldErrors[fieldId] ? 'is-error' : ''].filter(Boolean).join(' ')
+
   const fieldControlClass = (field: YouthFormField): string =>
     [
       styles.control,
@@ -208,13 +234,16 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const validationErrors = validateYouthForm(values)
+    const nextCustomFieldErrors = validateCustomFieldValues(activeCustomFields, values.customData)
     const nextPhotoError = validateYouthPhoto(photo)
     const invalidFields = Object.keys(validationErrors) as YouthFormField[]
+    const invalidCustomFields = Object.keys(nextCustomFieldErrors)
 
-    if (invalidFields.length > 0 || nextPhotoError) {
+    if (invalidFields.length > 0 || invalidCustomFields.length > 0 || nextPhotoError) {
       setFieldErrors(validationErrors)
+      setCustomFieldErrors(nextCustomFieldErrors)
       setPhotoError(nextPhotoError)
-      const issueCount = invalidFields.length + (nextPhotoError ? 1 : 0)
+      const issueCount = invalidFields.length + invalidCustomFields.length + (nextPhotoError ? 1 : 0)
       const message = issueCount === 1
         ? 'Revise o campo destacado antes de continuar.'
         : `Revise os ${issueCount} campos destacados antes de continuar.`
@@ -231,6 +260,10 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
             ?.focus()
         })
         window.setTimeout(() => setShakingField(null), 320)
+      } else if (invalidCustomFields[0]) {
+        panelRef.current
+          ?.querySelector<HTMLElement>(`[data-custom-field="${invalidCustomFields[0]}"]`)
+          ?.focus()
       }
       return
     }
@@ -549,6 +582,59 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
                 </label>
                 </div>
               </section>
+
+              {activeCustomFields.length > 0 && (
+                <section className={styles.detailsSection} aria-labelledby={`${titleId}-custom-fields`}>
+                  <div className={styles.sectionHeading}>
+                    <h3 id={`${titleId}-custom-fields`}>Informações adicionais</h3>
+                    <p>Definidas pela administração</p>
+                  </div>
+                  <div className={styles.fields}>
+                    {activeCustomFields.map((field) => {
+                      const value = values.customData[field.id] ?? ''
+                      const errorId = `${titleId}-custom-${field.id}-error`
+                      const commonProps = {
+                        'data-custom-field': field.id,
+                        value,
+                        disabled: isSaving,
+                        'aria-invalid': Boolean(customFieldErrors[field.id]),
+                        'aria-describedby': customFieldErrors[field.id] ? errorId : undefined,
+                      }
+                      return (
+                        <label key={field.id} className={`${styles.field} ${field.type === 'textarea' ? styles.fullWidth : ''}`}>
+                          <span>{field.label} {field.required && <b aria-hidden="true">*</b>}</span>
+                          {field.type === 'textarea' ? (
+                            <textarea {...commonProps} className={`${customControlClass(field.id)} ${styles.textAreaControl}`}
+                              maxLength={2000} rows={4} onChange={(event) => updateCustomField(field.id, event.target.value)} />
+                          ) : field.type === 'select' ? (
+                            <span className={styles.selectControl}>
+                              <select {...commonProps} className={customControlClass(field.id)} onChange={(event) => updateCustomField(field.id, event.target.value)}>
+                                <option value="">Selecione</option>
+                                {field.options.map((option) => <option key={option} value={option}>{option}</option>)}
+                              </select>
+                              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" /></svg>
+                            </span>
+                          ) : field.type === 'boolean' ? (
+                            <span className={styles.selectControl}>
+                              <select {...commonProps} className={customControlClass(field.id)} onChange={(event) => updateCustomField(field.id, event.target.value)}>
+                                <option value="">Selecione</option><option value="true">Sim</option><option value="false">Não</option>
+                              </select>
+                              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" /></svg>
+                            </span>
+                          ) : (
+                            <input {...commonProps} className={customControlClass(field.id)}
+                              type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}
+                              maxLength={field.type === 'text' ? 200 : undefined}
+                              inputMode={field.type === 'number' ? 'decimal' : undefined}
+                              onChange={(event) => updateCustomField(field.id, event.target.value)} />
+                          )}
+                          {customFieldErrors[field.id] && <small id={errorId} className={styles.fieldError} role="alert">{customFieldErrors[field.id]}</small>}
+                        </label>
+                      )
+                    })}
+                  </div>
+                </section>
+              )}
 
               {duplicateMatches.length > 0 && (
                 <div

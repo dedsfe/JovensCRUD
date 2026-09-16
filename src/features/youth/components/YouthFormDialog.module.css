@@ -302,6 +302,13 @@ textarea.control {
   resize: vertical;
 }
 
+.textAreaControl {
+  min-height: 112px;
+  padding-block: 14px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
 .control[aria-invalid='true'],
 .control:global(.is-error) {
   border-color: var(--color-red);
