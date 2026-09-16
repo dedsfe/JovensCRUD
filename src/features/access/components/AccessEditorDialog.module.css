@@ -1,0 +1,351 @@
+.backdrop {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: grid;
+  padding: 24px;
+  place-items: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(100%, 600px);
+  max-height: min(760px, calc(100dvh - 48px));
+  overflow: hidden;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-overlay);
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  gap: 24px;
+  padding: 30px 32px 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 29px;
+  font-weight: 740;
+  letter-spacing: -0.035em;
+}
+
+.header p {
+  margin: 7px 0 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+}
+
+.header button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  color: var(--color-ink-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.header button:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-pressed);
+}
+
+.header svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.8;
+}
+
+.body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 32px 4px;
+}
+
+.identity {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 17px 18px;
+  background: #f7f7f8;
+  border-radius: var(--radius-lg);
+}
+
+.identity > span {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 740;
+  background: #e8e8ea;
+  border-radius: 50%;
+}
+
+.identity div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.identity strong,
+.identity small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.identity strong {
+  font-size: 16px;
+  font-weight: 690;
+}
+
+.identity small {
+  color: var(--color-ink-secondary);
+  font-size: 13px;
+}
+
+.roles {
+  min-width: 0;
+  margin: 26px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.roles legend {
+  margin-bottom: 12px;
+  font-size: var(--text-sm);
+  font-weight: 680;
+}
+
+.roleOptions {
+  display: grid;
+  gap: 4px;
+  padding: 5px;
+  background: #f7f7f8;
+  border-radius: var(--radius-lg);
+}
+
+.roleOptions label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  gap: 14px;
+  min-height: 68px;
+  padding: 13px 14px;
+  align-items: center;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.roleOptions label:hover {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.roleOptions label[data-selected='true'] {
+  background: var(--color-canvas);
+  box-shadow: var(--shadow-selection);
+}
+
+.roleOptions input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.roleOptions label > span {
+  display: grid;
+  gap: 3px;
+}
+
+.roleOptions strong {
+  font-size: 14px;
+  font-weight: 680;
+}
+
+.roleOptions small {
+  color: var(--color-ink-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.roleOptions i {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1.5px solid var(--color-line-strong);
+  border-radius: 50%;
+}
+
+.roleOptions label[data-selected='true'] i {
+  border: 6px solid var(--color-blue);
+}
+
+.roleOptions label:focus-within {
+  outline: 4px solid var(--focus-outline);
+  outline-offset: 0;
+}
+
+.adminNotice {
+  margin: 14px 2px 0;
+  color: var(--color-ink-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.footer {
+  display: flex;
+  gap: 10px;
+  padding: 20px 32px 28px;
+  align-items: center;
+}
+
+.blockButton,
+.cancelButton,
+.saveButton {
+  min-height: 50px;
+  padding: 0 18px;
+  font-weight: 670;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.blockButton {
+  color: var(--color-red);
+  background: transparent;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.blockButton:hover {
+  color: #b80012;
+  background: var(--color-red-soft);
+}
+
+.cancelButton {
+  margin-left: auto;
+  color: var(--color-ink-secondary);
+  background: transparent;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.cancelButton:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-subtle);
+}
+
+.saveButton {
+  min-width: 154px;
+  color: #ffffff;
+  background: var(--color-blue);
+  box-shadow: var(--shadow-control);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.saveButton:hover {
+  background: var(--color-blue-hover);
+}
+
+.header button:disabled,
+.blockButton:disabled,
+.cancelButton:disabled,
+.saveButton:disabled,
+.roleOptions input:disabled + span {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+@media (max-width: 640px) {
+  .backdrop {
+    padding: 0;
+    place-items: end center;
+  }
+
+  .panel {
+    width: 100%;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)));
+    border-radius: 28px 28px 0 0;
+  }
+
+  .header {
+    padding: 24px 20px 16px;
+  }
+
+  .body {
+    padding-inline: 20px;
+  }
+
+  .footer {
+    padding: 12px 20px max(18px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 420px) {
+  .header h2 {
+    font-size: 27px;
+  }
+
+  .footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 8px;
+  }
+
+  .blockButton {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-height: 42px;
+    padding-inline: 4px;
+  }
+
+  .cancelButton {
+    margin-left: 0;
+    padding-inline: 8px;
+  }
+
+  .saveButton {
+    min-width: 0;
+    padding-inline: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header button,
+  .roleOptions label,
+  .blockButton,
+  .cancelButton,
+  .saveButton {
+    transition: none;
+  }
+}

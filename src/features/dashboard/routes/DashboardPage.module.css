@@ -1,0 +1,363 @@
+.page {
+  width: min(100%, 1240px);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: 46px clamp(28px, 5vw, 72px) 64px;
+  background: var(--color-canvas);
+}
+
+.header {
+  display: flex;
+  gap: 32px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: var(--text-display);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.header p {
+  margin: 10px 0 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.primaryAction {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 18px;
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: 680;
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--color-blue);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-control);
+  transition: background-color var(--motion-duration-fast)
+    var(--motion-ease-standard);
+}
+
+.primaryAction:hover {
+  background: var(--color-blue-hover);
+}
+
+.primaryAction:active {
+  background: var(--color-blue-pressed);
+}
+
+.primaryAction svg,
+.access a svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 46px;
+  padding: 28px 30px;
+  background: var(--color-surface-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.metrics article {
+  display: grid;
+  min-height: 106px;
+  padding: 0;
+  align-content: space-between;
+  background: transparent;
+}
+
+.metrics span,
+.metrics small {
+  color: var(--color-ink-secondary);
+}
+
+.metrics span {
+  font-size: var(--text-sm);
+  font-weight: 620;
+}
+
+.metrics strong {
+  margin-top: 12px;
+  font-size: 42px;
+  font-weight: 720;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.metrics small {
+  margin-top: 14px;
+  font-size: var(--text-xs);
+  line-height: 1.35;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.recent,
+.access {
+  padding: 26px;
+  border-radius: var(--radius-xl);
+}
+
+.recent {
+  background: var(--color-surface-subtle);
+}
+
+.sectionHeading {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.sectionHeading h2,
+.access h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.sectionHeading p {
+  margin: 5px 0 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+}
+
+.sectionHeading > a {
+  min-height: 44px;
+  padding: 12px 2px;
+  color: var(--color-blue);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.sectionHeading > a:hover {
+  color: var(--color-blue-hover);
+}
+
+.recent ul {
+  display: grid;
+  gap: 4px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recent li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 64px;
+  padding: 8px 10px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+}
+
+.personAvatar {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: var(--color-ink);
+  font-size: 11px;
+  font-weight: 730;
+  background: var(--color-surface-pressed);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.personAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.personName {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.personName strong,
+.personName small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personName strong {
+  font-size: var(--text-sm);
+}
+
+.personName small,
+.personStatus {
+  color: var(--color-ink-secondary);
+  font-size: var(--text-xs);
+}
+
+.personStatus[data-active='true'] {
+  color: var(--color-success);
+}
+
+.recent .emptyRecent {
+  display: flex;
+  min-height: 92px;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+  text-align: center;
+  background: var(--color-surface);
+}
+
+.access {
+  display: flex;
+  min-height: 100%;
+  color: var(--color-ink);
+  background: var(--color-blue-soft);
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.accessMark {
+  position: relative;
+  width: 58px;
+  height: 38px;
+}
+
+.accessMark span {
+  position: absolute;
+  bottom: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--color-blue);
+  border: 4px solid var(--color-blue-soft);
+  border-radius: 50%;
+}
+
+.accessMark span:nth-child(1) { left: 0; }
+.accessMark span:nth-child(2) { left: 18px; bottom: 12px; }
+.accessMark span:nth-child(3) { left: 36px; }
+
+.access h2 {
+  max-width: 260px;
+  margin-top: 28px;
+  font-size: var(--text-xl);
+  line-height: 1.15;
+}
+
+.access p {
+  margin: 12px 0 28px;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.access a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 44px;
+  color: var(--color-blue-pressed);
+  font-size: var(--text-sm);
+  font-weight: 680;
+  text-decoration: none;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.access a:hover {
+  color: var(--color-blue-hover);
+}
+
+@media (max-width: 1040px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .access {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 28px 20px 40px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .primaryAction {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 30px;
+    padding: 22px 16px;
+  }
+
+  .metrics article {
+    min-height: 100px;
+  }
+
+  .metrics span {
+    font-size: 12px;
+  }
+
+  .metrics strong {
+    font-size: 34px;
+  }
+
+  .metrics small {
+    display: none;
+  }
+
+  .recent,
+  .access {
+    padding: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryAction {
+    transition: none;
+  }
+
+  .sectionHeading > a,
+  .access a {
+    transition: none;
+  }
+}

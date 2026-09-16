@@ -1,0 +1,78 @@
+:root {
+  /* UMADEB design foundations: white canvas, neutral ink, Apple blue. */
+  --color-canvas: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f7f7f8;
+  --color-surface-pressed: #ededf0;
+  --color-ink: #1d1d1f;
+  --color-ink-secondary: #6e6e73;
+  --color-ink-tertiary: #8e8e93;
+  --color-line: #dedee2;
+  --color-line-strong: #c7c7cc;
+  --color-blue: #007aff;
+  --color-blue-hover: #006ee6;
+  --color-blue-pressed: #005fc7;
+  --color-blue-soft: #eef6ff;
+  --color-red: #d70015;
+  --color-red-soft: #fff1f2;
+  --color-success: #248a3d;
+
+  --font-ui: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Helvetica Neue", sans-serif;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-display: clamp(32px, 4vw, 46px);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Depth is always neutral black. Focus remains a blue outline, not a shadow. */
+  --shadow-selection: 0 2px 5px rgba(0, 0, 0, 0.07);
+  --shadow-control: 0 3px 8px rgba(0, 0, 0, 0.13);
+  --shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.14);
+  --shadow-media-mark: 0 3px 4px rgba(0, 0, 0, 0.18);
+  --shadow-text-on-image: 0 2px 12px rgba(0, 0, 0, 0.28);
+  --focus-outline: rgba(0, 122, 255, 0.14);
+
+  /* Motion vocabulary. Components must use these instead of ad-hoc timings. */
+  --motion-duration-instant: 90ms;
+  --motion-duration-fast: 160ms;
+  --motion-duration-standard: 220ms;
+  --motion-duration-deliberate: 300ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-instant: 1ms;
+    --motion-duration-fast: 1ms;
+    --motion-duration-standard: 1ms;
+    --motion-duration-deliberate: 1ms;
+  }
+}

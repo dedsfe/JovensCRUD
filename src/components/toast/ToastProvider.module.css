@@ -1,0 +1,93 @@
+.viewport {
+  position: fixed;
+  z-index: 1000;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 50%;
+  width: min(430px, calc(100% - 32px));
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  padding: 10px 10px 10px 16px;
+  color: #ffffff;
+  background: var(--color-ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+  pointer-events: auto;
+}
+
+.toast[data-tone='error'] {
+  background: var(--color-red);
+}
+
+.statusMark {
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.toast[data-tone='info'] .statusMark,
+.toast[data-tone='loading'] .statusMark {
+  background: #64a9ff;
+}
+
+.toast[data-tone='loading'] .statusMark {
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  animation: toast-spin 700ms linear infinite;
+}
+
+.message {
+  font-size: 14px;
+  font-weight: 590;
+  line-height: 1.35;
+}
+
+.closeButton {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.78);
+  background: transparent;
+  border: 0;
+  border-radius: 11px;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.closeButton:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes toast-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast[data-tone='loading'] .statusMark {
+    animation: none;
+    border-color: #ffffff;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}
