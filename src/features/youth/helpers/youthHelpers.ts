@@ -174,3 +174,60 @@ export const findDuplicateYouths = (
     return matches
   }, [])
 }
+
+export interface BirthdayDetails {
+  day: number
+  month: number
+  isCurrentMonth: boolean
+  isToday: boolean
+  formattedDate: string
+  turningAge: number | null
+}
+
+export const getBirthdayDetails = (birthDate: string | null): BirthdayDetails | null => {
+  if (!birthDate) return null
+  const [year, month, day] = birthDate.split('-').map(Number)
+  if (!year || !month || !day) return null
+
+  const now = new Date()
+  const currentMonth = now.getMonth() + 1
+  const currentDay = now.getDate()
+  const currentYear = now.getFullYear()
+
+  const isCurrentMonth = month === currentMonth
+  const isToday = isCurrentMonth && day === currentDay
+
+  const monthNames = [
+    'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+    'jul', 'ago', 'set', 'out', 'nov', 'dez',
+  ]
+  const formattedDate = `${day} de ${monthNames[month - 1]}`
+  const turningAge = currentYear - year
+
+  return {
+    day,
+    month,
+    isCurrentMonth,
+    isToday,
+    formattedDate,
+    turningAge: turningAge > 0 ? turningAge : null,
+  }
+}
+
+export const getWhatsAppUrl = (
+  phone: string,
+  preferredName: string,
+  type: 'general' | 'birthday' = 'general',
+): string | null => {
+  const raw = phone.replace(/\D/g, '')
+  if (raw.length < 10) return null
+
+  const number = raw.startsWith('55') && raw.length > 11 ? raw : `55${raw}`
+
+  const message =
+    type === 'birthday'
+      ? `A paz do Senhor, ${preferredName}! Passando para desejar um feliz aniversário! Que Deus continue abençoando ricamente a sua vida e seus passos! 🎉🎂`
+      : `A paz do Senhor, ${preferredName}! Tudo bem?`
+
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
+}

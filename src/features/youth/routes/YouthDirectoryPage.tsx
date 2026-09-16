@@ -2,7 +2,11 @@ import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import YouthFormDialog from '../components/YouthFormDialog'
 import { useYouths } from '../context/useYouths'
-import { normalizeText } from '../helpers/youthHelpers'
+import {
+  getBirthdayDetails,
+  getWhatsAppUrl,
+  normalizeText,
+} from '../helpers/youthHelpers'
 import { useToast } from '../../../components/toast/useToast'
 import type { Youth, YouthStatus } from '../types/youth'
 import {
@@ -11,11 +15,19 @@ import {
 } from '../../../lib/motion'
 import styles from './YouthDirectoryPage.module.css'
 
-type StatusFilter = 'all' | YouthStatus
+const WhatsAppGlyph: React.FC = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17.5 14.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2s-.8 1-1 1.2c-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.7.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.7-1.7-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.9c0 1.7 1.2 3.3 1.4 3.5.2.2 2.4 3.7 5.8 5.1.8.3 1.4.5 1.9.7.8.2 1.6.2 2.2.1.7-.1 2.1-.9 2.4-1.7.3-.8.3-1.6.2-1.7-.1-.2-.3-.3-.6-.5Z" />
+    <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z" />
+  </svg>
+)
+
+type StatusFilter = 'all' | 'birthdays' | YouthStatus
 
 const filterLabels: Record<StatusFilter, string> = {
   all: 'Todos',
   active: 'Ativos',
+  birthdays: 'Aniversariantes',
   inactive: 'Inativos',
   archived: 'Arquivados',
 }
@@ -41,7 +53,12 @@ const YouthDirectoryPage: React.FC = () => {
 
     return youths.filter((person) => {
       const matchesStatus =
-        status === 'all' ? person.status !== 'archived' : person.status === status
+        status === 'all'
+          ? person.status !== 'archived'
+          : status === 'birthdays'
+            ? person.status !== 'archived' &&
+              Boolean(getBirthdayDetails(person.birthDate)?.isCurrentMonth)
+            : person.status === status
       const searchableName = normalizeText(
         `${person.fullName} ${person.preferredName}`,
       )
@@ -173,45 +190,85 @@ const YouthDirectoryPage: React.FC = () => {
 
           <motion.ul className={styles.people} layout={!reduceMotion}>
             <AnimatePresence initial={false} mode="popLayout">
-              {filteredYouth.map((person) => (
-                <motion.li
-                  key={person.id}
-                  layout={!reduceMotion}
-                  initial={false}
-                  exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
-                  transition={
-                    reduceMotion
-                      ? reducedMotionTransition
-                      : {
-                          layout: motionTransition.layout,
-                          opacity: motionTransition.exit,
-                          y: motionTransition.exit,
-                        }
-                  }
-                >
-                  <span className={styles.portrait} aria-hidden="true">
-                    {person.photoUrl ? (
-                      <img src={person.photoUrl} alt="" />
-                    ) : (
-                      person.initials
-                    )}
-                  </span>
-                  <span className={styles.personCopy}>
-                    <span className={styles.nameLine}>
-                      <strong>{person.preferredName}</strong>
-                      <small>
-                        {person.age === null ? 'idade não informada' : `${person.age} anos`}
-                      </small>
+              {filteredYouth.map((person) => {
+                const bday = getBirthdayDetails(person.birthDate)
+                const whatsappUrl = getWhatsAppUrl(
+                  person.phone,
+                  person.preferredName,
+                  bday?.isToday ? 'birthday' : 'general',
+                )
+
+                return (
+                  <motion.li
+                    key={person.id}
+                    layout={!reduceMotion}
+                    initial={false}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -4 }}
+                    transition={
+                      reduceMotion
+                        ? reducedMotionTransition
+                        : {
+                            layout: motionTransition.layout,
+                            opacity: motionTransition.exit,
+                            y: motionTransition.exit,
+                          }
+                    }
+                  >
+                    <span className={styles.portrait} aria-hidden="true">
+                      {person.photoUrl ? (
+                        <img src={person.photoUrl} alt="" />
+                      ) : (
+                        person.initials
+                      )}
                     </span>
-                    <span>{person.fullName}</span>
-                    {person.phone ? (
-                      <a href={`tel:${person.phone.replace(/\D/g, '')}`}>
-                        {person.phone}
-                      </a>
-                    ) : (
-                      <small>Telefone não informado</small>
-                    )}
-                  </span>
+                    <span className={styles.personCopy}>
+                      <span className={styles.nameLine}>
+                        <strong>{person.preferredName}</strong>
+                        <small>
+                          {person.age === null ? 'idade não informada' : `${person.age} anos`}
+                        </small>
+                      </span>
+                      <span>{person.fullName}</span>
+
+                      {bday?.isCurrentMonth && (
+                        <span
+                          className={
+                            bday.isToday ? styles.todayTag : styles.birthdayTag
+                          }
+                        >
+                          🎂 {bday.isToday ? 'Aniversário hoje!' : `Aniversário dia ${bday.day}`}
+                        </span>
+                      )}
+
+                      <div className={styles.contactRow}>
+                        {person.phone ? (
+                          <>
+                            <a
+                              href={`tel:${person.phone.replace(/\D/g, '')}`}
+                              className={styles.phoneLink}
+                              title="Ligar"
+                            >
+                              {person.phone}
+                            </a>
+                            {whatsappUrl && (
+                              <a
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={styles.whatsappDirectoryLink}
+                                title={`Abrir WhatsApp de ${person.preferredName}`}
+                                aria-label={`Conversar com ${person.preferredName} no WhatsApp`}
+                              >
+                                <WhatsAppGlyph />
+                                <span>WhatsApp</span>
+                              </a>
+                            )}
+                          </>
+                        ) : (
+                          <small>Telefone não informado</small>
+                        )}
+                      </div>
+                    </span>
                   <span className={styles.personActions}>
                     <span
                       className={styles.status}
@@ -260,7 +317,8 @@ const YouthDirectoryPage: React.FC = () => {
                     </span>
                   </span>
                 </motion.li>
-              ))}
+              )
+            })}
             </AnimatePresence>
           </motion.ul>
 
