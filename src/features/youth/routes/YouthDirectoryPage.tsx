@@ -219,43 +219,45 @@ const YouthDirectoryPage: React.FC = () => {
                     >
                       {statusLabels[person.status]}
                     </span>
-                    {person.status === 'archived' ? (
-                      <button
-                        type="button"
-                        aria-label={`Restaurar ${person.preferredName}`}
-                        disabled={statusBusy === person.id}
-                        onClick={() => void toggleArchive(person)}
-                      >
-                        <svg viewBox="0 0 20 20" aria-hidden="true">
-                          <path d="M4 10a6 6 0 1 1 1.8 4.3" />
-                          <path d="M4 15v-4h4" />
-                        </svg>
-                      </button>
-                    ) : (
-                      <>
+                    <span className={styles.actionButtons}>
+                      {person.status === 'archived' ? (
                         <button
                           type="button"
-                          aria-label={`Arquivar ${person.preferredName}`}
+                          aria-label={`Restaurar ${person.preferredName}`}
                           disabled={statusBusy === person.id}
                           onClick={() => void toggleArchive(person)}
                         >
                           <svg viewBox="0 0 20 20" aria-hidden="true">
-                            <path d="M3.5 6.5h13M8 9.5h4M8 12.5h4" />
-                            <path d="M4.5 6.5v9h11v-9l-1.2-3H5.7l-1.2 3Z" />
+                            <path d="M4 10a6 6 0 1 1 1.8 4.3" />
+                            <path d="M4 15v-4h4" />
                           </svg>
                         </button>
-                        <button
-                          type="button"
-                          aria-label={`Editar ${person.preferredName}`}
-                          onClick={() => openEditForm(person)}
-                        >
-                          <svg viewBox="0 0 20 20" aria-hidden="true">
-                            <path d="m4 14.8.7-3.2L13 3.3a1.7 1.7 0 0 1 2.4 0l1.3 1.3a1.7 1.7 0 0 1 0 2.4l-8.3 8.3-3.2.7Z" />
-                            <path d="m11.8 4.5 3.7 3.7" />
-                          </svg>
-                        </button>
-                      </>
-                    )}
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            aria-label={`Arquivar ${person.preferredName}`}
+                            disabled={statusBusy === person.id}
+                            onClick={() => void toggleArchive(person)}
+                          >
+                            <svg viewBox="0 0 20 20" aria-hidden="true">
+                              <path d="M3.5 6.5h13M8 9.5h4M8 12.5h4" />
+                              <path d="M4.5 6.5v9h11v-9l-1.2-3H5.7l-1.2 3Z" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Editar ${person.preferredName}`}
+                            onClick={() => openEditForm(person)}
+                          >
+                            <svg viewBox="0 0 20 20" aria-hidden="true">
+                              <path d="m4 14.8.7-3.2L13 3.3a1.7 1.7 0 0 1 2.4 0l1.3 1.3a1.7 1.7 0 0 1 0 2.4l-8.3 8.3-3.2.7Z" />
+                              <path d="m11.8 4.5 3.7 3.7" />
+                            </svg>
+                          </button>
+                        </>
+                      )}
+                    </span>
                   </span>
                 </motion.li>
               ))}

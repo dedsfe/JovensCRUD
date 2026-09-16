@@ -281,6 +281,16 @@
   align-self: stretch;
 }
 
+.actionButtons {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+
+.actionButtons button {
+  width: 40px;
+}
+
 .status {
   color: var(--color-ink-tertiary);
   font-size: var(--text-xs);
