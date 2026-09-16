@@ -469,33 +469,152 @@
 
 @media (max-width: 700px) {
   .page {
-    padding: 28px 20px 40px;
+    width: 100%;
+    padding: 28px 16px 44px;
+    overflow-x: clip;
   }
 
   .header {
+    gap: 20px;
     align-items: flex-start;
     flex-direction: column;
   }
 
   .addButton {
     width: 100%;
+    min-height: 54px;
     justify-content: center;
+    box-shadow: none;
   }
 
   .tools {
     grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
     margin-top: 28px;
   }
 
+  .searchField {
+    min-height: 56px;
+  }
+
+  .filters {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    padding: 6px;
+  }
+
   .filters button {
-    flex: 1;
-    padding-inline: 8px;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding-inline: 10px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .filters button:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .filters .activeFilter {
+    background: var(--color-blue-soft);
+    box-shadow: none;
+  }
+
+  .resultSummary {
+    margin-top: 24px;
+  }
+
+  .people {
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .people li {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+    padding: 16px;
+    align-items: start;
+  }
+
+  .portrait {
+    width: 52px;
+    height: 52px;
+  }
+
+  .personCopy {
+    gap: 5px;
+    padding-top: 1px;
+  }
+
+  .nameLine {
+    min-width: 0;
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+
+  .nameLine strong {
+    max-width: 100%;
+  }
+
+  .birthdayTag,
+  .todayTag {
+    max-width: 100%;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .contactRow {
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .phoneLink {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .whatsappDirectoryLink {
+    height: 40px;
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+
+  .whatsappDirectoryLink svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .personActions {
+    width: 100%;
+    grid-column: 1 / -1;
+    gap: 12px;
+    margin-top: 2px;
+    align-self: auto;
+    justify-content: space-between;
+  }
+
+  .status {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .actionButtons {
+    gap: 4px;
   }
 }
 
 @media (max-width: 380px) {
   .people li {
-    grid-template-columns: 46px minmax(0, 1fr);
+    grid-template-columns: 44px minmax(0, 1fr);
     padding: 14px;
   }
 
@@ -504,9 +623,8 @@
     height: 44px;
   }
 
-  .personActions {
-    grid-column: 2;
-    justify-content: space-between;
+  .actionButtons {
+    gap: 0;
   }
 }
 

@@ -226,16 +226,7 @@ const YouthDirectoryPage: React.FC = () => {
                             y: motionTransition.exit,
                           }
                     }
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Ver ficha completa de ${person.preferredName}`}
                     onClick={() => openProfile(person)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        openProfile(person)
-                      }
-                    }}
                   >
                     <span className={styles.portrait} aria-hidden="true">
                       {person.photoUrl ? (
