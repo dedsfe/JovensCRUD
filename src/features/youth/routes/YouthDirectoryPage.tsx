@@ -254,37 +254,40 @@ const YouthDirectoryPage: React.FC = () => {
                         </span>
                       )}
 
-                      <div className={styles.contactRow}>
-                        {person.phone ? (
-                          <>
-                            <a
-                              href={`tel:${person.phone.replace(/\D/g, '')}`}
-                              className={styles.phoneLink}
-                              title="Ligar"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {person.phone}
-                            </a>
-                            {whatsappUrl && (
-                              <a
-                                href={whatsappUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={styles.whatsappDirectoryLink}
-                                title={`Abrir WhatsApp de ${person.preferredName}`}
-                                aria-label={`Conversar com ${person.preferredName} no WhatsApp`}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <WhatsAppGlyph />
-                                <span>WhatsApp</span>
-                              </a>
-                            )}
-                          </>
-                        ) : (
-                          <small>Telefone não informado</small>
-                        )}
-                      </div>
+                      <span className={styles.mobileStatus} data-active={person.status === 'active'}>
+                        {statusLabels[person.status]}
+                      </span>
                     </span>
+                  <div className={styles.contactRow}>
+                    {person.phone ? (
+                      <>
+                        <a
+                          href={`tel:${person.phone.replace(/\D/g, '')}`}
+                          className={styles.phoneLink}
+                          title="Ligar"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {person.phone}
+                        </a>
+                        {whatsappUrl && (
+                          <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.whatsappDirectoryLink}
+                            title={`Abrir WhatsApp de ${person.preferredName}`}
+                            aria-label={`Conversar com ${person.preferredName} no WhatsApp`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <WhatsAppGlyph />
+                            <span>WhatsApp</span>
+                          </a>
+                        )}
+                      </>
+                    ) : (
+                      <small>Telefone não informado</small>
+                    )}
+                  </div>
                   <span className={styles.personActions}>
                     <span
                       className={styles.status}
@@ -306,6 +309,7 @@ const YouthDirectoryPage: React.FC = () => {
                           <circle cx="10" cy="7" r="3.5" />
                           <path d="M4 17a6 6 0 0 1 12 0" />
                         </svg>
+                        <span className={styles.actionLabel}>Ficha</span>
                       </button>
                       {person.status === 'archived' ? (
                         <button
@@ -321,6 +325,7 @@ const YouthDirectoryPage: React.FC = () => {
                             <path d="M4 10a6 6 0 1 1 1.8 4.3" />
                             <path d="M4 15v-4h4" />
                           </svg>
+                          <span className={styles.actionLabel}>Restaurar</span>
                         </button>
                       ) : (
                         <>
@@ -337,6 +342,7 @@ const YouthDirectoryPage: React.FC = () => {
                               <path d="M3.5 6.5h13M8 9.5h4M8 12.5h4" />
                               <path d="M4.5 6.5v9h11v-9l-1.2-3H5.7l-1.2 3Z" />
                             </svg>
+                            <span className={styles.actionLabel}>Arquivar</span>
                           </button>
                           <button
                             type="button"
@@ -350,6 +356,7 @@ const YouthDirectoryPage: React.FC = () => {
                               <path d="m4 14.8.7-3.2L13 3.3a1.7 1.7 0 0 1 2.4 0l1.3 1.3a1.7 1.7 0 0 1 0 2.4l-8.3 8.3-3.2.7Z" />
                               <path d="m11.8 4.5 3.7 3.7" />
                             </svg>
+                            <span className={styles.actionLabel}>Editar</span>
                           </button>
                         </>
                       )}

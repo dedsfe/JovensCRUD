@@ -230,6 +230,7 @@
   background: var(--color-surface-pressed);
   border-radius: 50%;
   overflow: hidden;
+  grid-row: 1 / span 2;
 }
 
 .portrait img {
@@ -244,6 +245,8 @@
   gap: 3px;
   color: var(--color-ink-secondary);
   font-size: 13px;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .nameLine {
@@ -287,6 +290,8 @@
   gap: 8px;
   align-items: center;
   margin-top: 2px;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .phoneLink {
@@ -362,6 +367,13 @@
   gap: 8px;
   align-items: center;
   align-self: stretch;
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+.mobileStatus,
+.actionLabel {
+  display: none;
 }
 
 .actionButtons {
@@ -501,7 +513,7 @@
     display: grid;
     width: 100%;
     min-width: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
     padding: 6px;
   }
@@ -516,7 +528,18 @@
   }
 
   .filters button:nth-child(3) {
-    grid-column: 1 / -1;
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
+
+  .filters button:nth-child(4) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .filters button:nth-child(5) {
+    grid-column: 3;
+    grid-row: 2;
   }
 
   .filters .activeFilter {
@@ -545,11 +568,15 @@
   .portrait {
     width: 52px;
     height: 52px;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .personCopy {
     gap: 5px;
     padding-top: 1px;
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .nameLine {
@@ -569,9 +596,25 @@
     white-space: normal;
   }
 
+  .mobileStatus {
+    display: inline-flex;
+    width: fit-content;
+    margin-top: 2px;
+    color: var(--color-ink-tertiary);
+    font-size: 11px;
+    font-weight: 680;
+  }
+
+  .mobileStatus[data-active='true'] {
+    color: var(--color-success);
+  }
+
   .contactRow {
+    width: 100%;
+    grid-column: 1 / -1;
+    grid-row: 2;
     gap: 6px;
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
   .phoneLink {
@@ -595,20 +638,40 @@
   .personActions {
     width: 100%;
     grid-column: 1 / -1;
-    gap: 12px;
-    margin-top: 2px;
+    grid-row: 3;
+    gap: 0;
+    margin-top: 4px;
     align-self: auto;
-    justify-content: space-between;
+    justify-content: stretch;
   }
 
-  .status {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
+  .personActions > .status {
+    display: none;
   }
 
   .actionButtons {
-    gap: 4px;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(78px, 1fr));
+    gap: 6px;
+  }
+
+  .personActions .actionButtons button {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    gap: 6px;
+    padding-inline: 8px;
+    color: var(--color-ink-secondary);
+    background: var(--color-canvas);
+  }
+
+  .actionLabel {
+    display: inline;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 650;
+    text-overflow: ellipsis;
   }
 }
 
@@ -623,8 +686,9 @@
     height: 44px;
   }
 
-  .actionButtons {
-    gap: 0;
+  .personActions .actionButtons button {
+    gap: 4px;
+    padding-inline: 5px;
   }
 }
 
