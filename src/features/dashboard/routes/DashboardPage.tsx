@@ -59,6 +59,7 @@ const DashboardPage: React.FC = () => {
         </Link>
       </header>
 
+      {/* Cards de Métricas */}
       <section className={styles.metrics} aria-label="Resumo do diretório">
         <article>
           <span>Total de jovens</span>
@@ -78,33 +79,24 @@ const DashboardPage: React.FC = () => {
         <article>
           <span>Inativos</span>
           <strong>{metricValue(inactiveYouth)}</strong>
-          <small>precisam de acompanhamento</small>
+          <small>precisam de atenção</small>
         </article>
       </section>
 
-      <div className={styles.columns}>
-        <div>
-          {/* Seção Aniversariantes do Mês */}
-          <section className={styles.birthdays} aria-labelledby="birthdays-title">
-            <div className={styles.sectionHeading}>
-              <div>
-                <h2 id="birthdays-title">
-                  Aniversariantes de {currentMonthName}
-                </h2>
-                <p>
-                  {isLoading
-                    ? 'Buscando aniversariantes...'
-                    : monthBirthdays.length === 1
-                      ? '1 jovem comemora aniversário este mês.'
-                      : monthBirthdays.length > 1
-                        ? `${monthBirthdays.length} jovens comemoram aniversário este mês.`
-                        : `Nenhum aniversário cadastrado em ${currentMonthName}.`}
-                </p>
-              </div>
-              <Link to="/jovens">Ver diretório</Link>
+      {/* Grid Principal de 2 Colunas */}
+      <div className={styles.contentGrid}>
+        {/* Coluna 1: Aniversariantes do Mês */}
+        <section className={styles.sectionCard} aria-labelledby="birthdays-title">
+          <div className={styles.sectionHeading}>
+            <div>
+              <h2 id="birthdays-title">Aniversariantes de {currentMonthName}</h2>
+              <p>Comemorações e mensagens da liderança.</p>
             </div>
+            <Link to="/jovens">Ver todos</Link>
+          </div>
 
-            <ul data-empty={monthBirthdays.length === 0}>
+          {monthBirthdays.length > 0 ? (
+            <ul className={styles.peopleList}>
               {monthBirthdays.map(({ person, details }) => {
                 const whatsappUrl = getWhatsAppUrl(
                   person.phone,
@@ -113,7 +105,7 @@ const DashboardPage: React.FC = () => {
                 )
 
                 return (
-                  <li key={person.id}>
+                  <li key={person.id} className={styles.personItem}>
                     <span className={styles.personAvatar} aria-hidden="true">
                       {person.photoUrl ? (
                         <img src={person.photoUrl} alt="" />
@@ -145,7 +137,7 @@ const DashboardPage: React.FC = () => {
                         rel="noopener noreferrer"
                         className={styles.whatsappButton}
                         title={`Parabenizar ${person.preferredName} no WhatsApp`}
-                        aria-label={`Enviar parabéns para ${person.preferredName} no WhatsApp`}
+                        aria-label={`Enviar mensagem para ${person.preferredName} no WhatsApp`}
                       >
                         <WhatsAppGlyph />
                         <span>Parabenizar</span>
@@ -154,33 +146,39 @@ const DashboardPage: React.FC = () => {
                   </li>
                 )
               })}
-              {!isLoading && monthBirthdays.length === 0 && (
-                <li className={styles.emptyBirthdays}>
-                  Nenhum jovem faz aniversário em {currentMonthName}.
-                </li>
-              )}
             </ul>
-          </section>
-
-          {/* Seção Adicionados Recentemente */}
-          <section className={styles.recent} aria-labelledby="recent-title">
-            <div className={styles.sectionHeading}>
-              <div>
-                <h2 id="recent-title">Adicionados recentemente</h2>
-                <p>
-                  {isLoading
-                    ? 'Atualizando o diretório...'
-                    : error
-                      ? 'Não foi possível atualizar agora.'
-                      : 'Últimos cadastros realizados na comunidade.'}
-                </p>
+          ) : (
+            <div className={styles.emptyStateContainer}>
+              <div className={styles.emptyStateIcon} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="3" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                  <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" />
+                </svg>
               </div>
-              <Link to="/jovens">Ver todos</Link>
+              <strong>Sem aniversários este mês</strong>
+              <p>
+                Nenhum jovem cadastrado faz aniversário em {currentMonthName}.
+                Novas datas registradas aparecerão aqui automaticamente.
+              </p>
             </div>
+          )}
+        </section>
 
-            <ul data-empty={recentYouth.length === 0}>
+        {/* Coluna 2: Adicionados Recentemente */}
+        <section className={styles.sectionCard} aria-labelledby="recent-title">
+          <div className={styles.sectionHeading}>
+            <div>
+              <h2 id="recent-title">Adicionados recentemente</h2>
+              <p>Últimos jovens cadastrados no diretório.</p>
+            </div>
+            <Link to="/jovens">Ver todos</Link>
+          </div>
+
+          {recentYouth.length > 0 ? (
+            <ul className={styles.peopleList}>
               {recentYouth.map((person) => (
-                <li key={person.id}>
+                <li key={person.id} className={styles.recentItem}>
                   <span className={styles.personAvatar} aria-hidden="true">
                     {person.photoUrl ? (
                       <img src={person.photoUrl} alt="" />
@@ -200,38 +198,48 @@ const DashboardPage: React.FC = () => {
                   </span>
                 </li>
               ))}
-              {!isLoading && recentYouth.length === 0 && (
-                <li className={styles.emptyRecent}>
-                  {directoryAvailable
-                    ? 'Nenhum jovem foi adicionado ainda.'
-                    : 'Ative um acesso de liderança para visualizar o diretório.'}
-                </li>
-              )}
             </ul>
-          </section>
-        </div>
+          ) : (
+            <div className={styles.emptyStateContainer}>
+              <div className={styles.emptyStateIcon} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="9" cy="8" r="3" />
+                  <path d="M3.8 19c.4-3.3 2.1-5 5.2-5s4.8 1.7 5.2 5" />
+                </svg>
+              </div>
+              <strong>Nenhum cadastro recente</strong>
+              <p>
+                {directoryAvailable
+                  ? 'Cadastre o primeiro jovem para começar a organizar a comunidade.'
+                  : 'Ative um acesso de liderança para visualizar o diretório.'}
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
 
-        <aside className={styles.access} aria-labelledby="access-title">
+      {/* Banner de Acessos e Governança */}
+      <section className={styles.accessBanner} aria-labelledby="access-title">
+        <div className={styles.accessContent}>
           <div className={styles.accessMark} aria-hidden="true">
             <span />
             <span />
-            <span />
           </div>
-          <div>
-            <h2 id="access-title">Acessos sob seu controle</h2>
+          <div className={styles.accessText}>
+            <h2 id="access-title">Acessos e liderança da UMADEB</h2>
             <p>
-              Novas contas entram como membros pendentes. Só um administrador
-              pode aprovar ou alterar cargos.
+              Controle quem pode visualizar, cadastrar e gerenciar os jovens da comunidade.
+              Novas contas entram como membros pendentes e exigem aprovação de um administrador.
             </p>
           </div>
-          <Link to="/acessos">
-            Gerenciar acessos
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M6 14 14 6M8 6h6v6" />
-            </svg>
-          </Link>
-        </aside>
-      </div>
+        </div>
+        <Link to="/acessos" className={styles.accessButton}>
+          Gerenciar acessos
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M6 14 14 6M8 6h6v6" />
+          </svg>
+        </Link>
+      </section>
     </div>
   )
 }
