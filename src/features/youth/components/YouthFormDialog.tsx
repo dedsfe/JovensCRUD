@@ -33,6 +33,7 @@ const emptyValues: YouthFormValues = {
   birthDate: '',
   phone: '',
   status: 'active',
+  notes: '',
 }
 
 const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
@@ -45,6 +46,7 @@ const valuesFromYouth = (youth: Youth | null): YouthFormValues =>
         birthDate: isoDateToBrazilian(youth.birthDate),
         phone: formatBrazilianPhone(youth.phone),
         status: youth.status === 'active' ? 'active' : 'inactive',
+        notes: youth.notes ?? '',
       }
     : emptyValues
 
@@ -128,7 +130,7 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
       if (event.key !== 'Tab' || !panelRef.current) return
       const focusable = Array.from(
         panelRef.current.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
         ),
       )
       if (focusable.length === 0) return
@@ -527,6 +529,23 @@ const YouthFormDialog: React.FC<YouthFormDialogProps> = ({
                       {fieldErrors.status}
                     </small>
                   )}
+                </label>
+
+                <label className={`${styles.field} ${styles.fullWidth} t-input-wrap`}>
+                  <span>Observações pastorais</span>
+                  <textarea
+                    className={fieldControlClass('notes')}
+                    data-field="notes"
+                    value={values.notes}
+                    maxLength={2000}
+                    rows={3}
+                    disabled={isSaving}
+                    placeholder="Ministérios (louvor, mídia, recepção), talentos, pedidos de oração..."
+                    onChange={(event) => updateField('notes', event.target.value)}
+                  />
+                  <small className={styles.fieldHint}>
+                    Informações para apoiar o acompanhamento e cuidado da liderança.
+                  </small>
                 </label>
                 </div>
               </section>

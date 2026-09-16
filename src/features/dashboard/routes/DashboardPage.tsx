@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useYouths } from '../../youth/context/useYouths'
 import {
   getBirthdayDetails,
@@ -7,6 +7,7 @@ import {
   type BirthdayDetails,
 } from '../../youth/helpers/youthHelpers'
 import type { Youth } from '../../youth/types/youth'
+import YouthProfileDialog from '../../youth/components/YouthProfileDialog'
 import styles from './DashboardPage.module.css'
 
 const WhatsAppGlyph: React.FC = () => (
@@ -23,6 +24,20 @@ interface BirthdayPerson {
 
 const DashboardPage: React.FC = () => {
   const { youths, access, isLoading, error } = useYouths()
+  const [selectedProfileYouth, setSelectedProfileYouth] = useState<Youth | null>(null)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const openProfile = (youth: Youth): void => {
+    setSelectedProfileYouth(youth)
+    setIsProfileOpen(true)
+  }
+
+  const currentProfileYouth = useMemo(() => {
+    if (!selectedProfileYouth) return null
+    return youths.find((y) => y.id === selectedProfileYouth.id) ?? selectedProfileYouth
+  }, [selectedProfileYouth, youths])
+
   const activeYouth = youths.filter(({ status }) => status === 'active')
   const inactiveYouth = youths.length - activeYouth.length
   const recentYouth = youths.slice(0, 4)
@@ -105,7 +120,20 @@ const DashboardPage: React.FC = () => {
                 )
 
                 return (
-                  <li key={person.id} className={styles.personItem}>
+                  <li
+                    key={person.id}
+                    className={styles.personItem}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Ver ficha completa de ${person.preferredName}`}
+                    onClick={() => openProfile(person)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        openProfile(person)
+                      }
+                    }}
+                  >
                     <span className={styles.personAvatar} aria-hidden="true">
                       {person.photoUrl ? (
                         <img src={person.photoUrl} alt="" />
@@ -138,6 +166,7 @@ const DashboardPage: React.FC = () => {
                         className={styles.whatsappButton}
                         title={`Parabenizar ${person.preferredName} no WhatsApp`}
                         aria-label={`Enviar mensagem para ${person.preferredName} no WhatsApp`}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <WhatsAppGlyph />
                         <span>Parabenizar</span>
@@ -178,7 +207,20 @@ const DashboardPage: React.FC = () => {
           {recentYouth.length > 0 ? (
             <ul className={styles.peopleList}>
               {recentYouth.map((person) => (
-                <li key={person.id} className={styles.recentItem}>
+                <li
+                  key={person.id}
+                  className={styles.recentItem}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Ver ficha completa de ${person.preferredName}`}
+                  onClick={() => openProfile(person)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      openProfile(person)
+                    }
+                  }}
+                >
                   <span className={styles.personAvatar} aria-hidden="true">
                     {person.photoUrl ? (
                       <img src={person.photoUrl} alt="" />
@@ -240,6 +282,17 @@ const DashboardPage: React.FC = () => {
           </svg>
         </Link>
       </section>
+
+      <YouthProfileDialog
+        youth={currentProfileYouth}
+        isOpen={isProfileOpen}
+        canManage={directoryAvailable}
+        onClose={() => setIsProfileOpen(false)}
+        onEdit={() => {
+          setIsProfileOpen(false)
+          navigate('/jovens')
+        }}
+      />
     </div>
   )
 }

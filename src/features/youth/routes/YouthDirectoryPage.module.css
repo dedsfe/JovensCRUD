@@ -205,6 +205,18 @@
   padding: 18px;
   background: var(--color-surface-subtle);
   border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast)
+    var(--motion-ease-standard);
+}
+
+.people li:hover {
+  background: var(--color-surface-pressed);
+}
+
+.people li:focus-visible {
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 1px;
 }
 
 .portrait {

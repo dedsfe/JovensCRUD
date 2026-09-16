@@ -11,6 +11,7 @@ export interface Youth {
   initials: string
   photoPath: string | null
   photoUrl: string | null
+  notes: string | null
   createdAt: string
 }
 
@@ -20,6 +21,7 @@ export interface YouthFormValues {
   birthDate: string
   phone: string
   status: 'active' | 'inactive'
+  notes: string
 }
 
 export interface YouthMutationInput {

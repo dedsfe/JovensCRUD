@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import YouthFormDialog from '../components/YouthFormDialog'
+import YouthProfileDialog from '../components/YouthProfileDialog'
 import { useYouths } from '../context/useYouths'
 import {
   getBirthdayDetails,
@@ -45,8 +46,20 @@ const YouthDirectoryPage: React.FC = () => {
   const [status, setStatus] = useState<StatusFilter>('all')
   const [editingYouth, setEditingYouth] = useState<Youth | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [selectedProfileYouth, setSelectedProfileYouth] = useState<Youth | null>(null)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [statusBusy, setStatusBusy] = useState<string | null>(null)
   const reduceMotion = useReducedMotion()
+
+  const openProfile = (youth: Youth): void => {
+    setSelectedProfileYouth(youth)
+    setIsProfileOpen(true)
+  }
+
+  const currentProfileYouth = useMemo(() => {
+    if (!selectedProfileYouth) return null
+    return youths.find((y) => y.id === selectedProfileYouth.id) ?? selectedProfileYouth
+  }, [selectedProfileYouth, youths])
 
   const filteredYouth = useMemo(() => {
     const normalizedQuery = normalizeText(query.trim())
@@ -213,6 +226,16 @@ const YouthDirectoryPage: React.FC = () => {
                             y: motionTransition.exit,
                           }
                     }
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Ver ficha completa de ${person.preferredName}`}
+                    onClick={() => openProfile(person)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        openProfile(person)
+                      }
+                    }}
                   >
                     <span className={styles.portrait} aria-hidden="true">
                       {person.photoUrl ? (
@@ -247,6 +270,7 @@ const YouthDirectoryPage: React.FC = () => {
                               href={`tel:${person.phone.replace(/\D/g, '')}`}
                               className={styles.phoneLink}
                               title="Ligar"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               {person.phone}
                             </a>
@@ -258,6 +282,7 @@ const YouthDirectoryPage: React.FC = () => {
                                 className={styles.whatsappDirectoryLink}
                                 title={`Abrir WhatsApp de ${person.preferredName}`}
                                 aria-label={`Conversar com ${person.preferredName} no WhatsApp`}
+                                onClick={(e) => e.stopPropagation()}
                               >
                                 <WhatsAppGlyph />
                                 <span>WhatsApp</span>
@@ -277,12 +302,29 @@ const YouthDirectoryPage: React.FC = () => {
                       {statusLabels[person.status]}
                     </span>
                     <span className={styles.actionButtons}>
+                      <button
+                        type="button"
+                        aria-label={`Ver ficha completa de ${person.preferredName}`}
+                        title={`Ver ficha completa de ${person.preferredName}`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          openProfile(person)
+                        }}
+                      >
+                        <svg viewBox="0 0 20 20" aria-hidden="true">
+                          <circle cx="10" cy="7" r="3.5" />
+                          <path d="M4 17a6 6 0 0 1 12 0" />
+                        </svg>
+                      </button>
                       {person.status === 'archived' ? (
                         <button
                           type="button"
                           aria-label={`Restaurar ${person.preferredName}`}
                           disabled={statusBusy === person.id}
-                          onClick={() => void toggleArchive(person)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            void toggleArchive(person)
+                          }}
                         >
                           <svg viewBox="0 0 20 20" aria-hidden="true">
                             <path d="M4 10a6 6 0 1 1 1.8 4.3" />
@@ -295,7 +337,10 @@ const YouthDirectoryPage: React.FC = () => {
                             type="button"
                             aria-label={`Arquivar ${person.preferredName}`}
                             disabled={statusBusy === person.id}
-                            onClick={() => void toggleArchive(person)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              void toggleArchive(person)
+                            }}
                           >
                             <svg viewBox="0 0 20 20" aria-hidden="true">
                               <path d="M3.5 6.5h13M8 9.5h4M8 12.5h4" />
@@ -305,7 +350,10 @@ const YouthDirectoryPage: React.FC = () => {
                           <button
                             type="button"
                             aria-label={`Editar ${person.preferredName}`}
-                            onClick={() => openEditForm(person)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              openEditForm(person)
+                            }}
                           >
                             <svg viewBox="0 0 20 20" aria-hidden="true">
                               <path d="m4 14.8.7-3.2L13 3.3a1.7 1.7 0 0 1 2.4 0l1.3 1.3a1.7 1.7 0 0 1 0 2.4l-8.3 8.3-3.2.7Z" />
@@ -354,6 +402,17 @@ const YouthDirectoryPage: React.FC = () => {
         isOpen={isFormOpen}
         youth={editingYouth}
         onClose={() => setIsFormOpen(false)}
+      />
+
+      <YouthProfileDialog
+        youth={currentProfileYouth}
+        isOpen={isProfileOpen}
+        canManage={hasDirectoryAccess}
+        onClose={() => setIsProfileOpen(false)}
+        onEdit={(youth) => {
+          setIsProfileOpen(false)
+          openEditForm(youth)
+        }}
       />
     </div>
   )

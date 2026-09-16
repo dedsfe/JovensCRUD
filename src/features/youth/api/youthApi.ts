@@ -23,6 +23,7 @@ interface YouthRow {
   phone: string | null
   status: YouthStatus
   photo_path: string | null
+  notes: string | null
   created_at: string
 }
 
@@ -80,6 +81,7 @@ const mapYouth = async (row: YouthRow): Promise<Youth> => ({
   initials: getInitials(row.preferred_name?.trim() || row.full_name),
   photoPath: row.photo_path,
   photoUrl: await createPhotoUrl(row.photo_path),
+  notes: row.notes ?? null,
   createdAt: row.created_at,
 })
 
@@ -89,7 +91,11 @@ const toDatabaseValues = (values: YouthFormValues) => ({
   birth_date: brazilianDateToIso(values.birthDate),
   phone: values.phone.trim() || null,
   status: values.status,
+  notes: values.notes.trim() || null,
 })
+
+const youthSelection =
+  'id, full_name, preferred_name, birth_date, phone, status, photo_path, notes, created_at'
 
 export const youthApi = {
   getAccess: async (userId: string): Promise<YouthAccess> => {
@@ -113,9 +119,7 @@ export const youthApi = {
   list: async (): Promise<Youth[]> => {
     const { data, error } = await supabase
       .from('youths')
-      .select(
-        'id, full_name, preferred_name, birth_date, phone, status, photo_path, created_at',
-      )
+      .select(youthSelection)
       .order('created_at', { ascending: false })
 
     if (error) throw new Error('Não foi possível carregar o diretório.')
@@ -131,9 +135,7 @@ export const youthApi = {
         created_by: userId,
         updated_by: userId,
       })
-      .select(
-        'id, full_name, preferred_name, birth_date, phone, status, photo_path, created_at',
-      )
+      .select(youthSelection)
       .single()
 
     if (error || !data) throw new Error('Não foi possível adicionar o jovem.')
@@ -146,9 +148,7 @@ export const youthApi = {
           .from('youths')
           .update({ photo_path: photoPath, updated_by: userId })
           .eq('id', row.id)
-          .select(
-            'id, full_name, preferred_name, birth_date, phone, status, photo_path, created_at',
-          )
+          .select(youthSelection)
           .single()
 
         if (updateError || !updated) {
@@ -187,9 +187,7 @@ export const youthApi = {
         updated_by: userId,
       })
       .eq('id', youth.id)
-      .select(
-        'id, full_name, preferred_name, birth_date, phone, status, photo_path, created_at',
-      )
+      .select(youthSelection)
       .single()
 
     if (error || !data) {
@@ -210,9 +208,7 @@ export const youthApi = {
       .from('youths')
       .update({ status, updated_by: userId })
       .eq('id', youth.id)
-      .select(
-        'id, full_name, preferred_name, birth_date, phone, status, photo_path, created_at',
-      )
+      .select(youthSelection)
       .single()
 
     if (error || !data) {

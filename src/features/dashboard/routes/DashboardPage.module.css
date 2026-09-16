@@ -176,6 +176,9 @@
   padding: 10px 14px;
   background: var(--color-surface);
   border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast)
+    var(--motion-ease-standard);
 }
 
 .recentItem {
@@ -187,6 +190,20 @@
   padding: 10px 14px;
   background: var(--color-surface);
   border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast)
+    var(--motion-ease-standard);
+}
+
+.personItem:hover,
+.recentItem:hover {
+  background: var(--color-surface-pressed);
+}
+
+.personItem:focus-visible,
+.recentItem:focus-visible {
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 1px;
 }
 
 .personAvatar {
