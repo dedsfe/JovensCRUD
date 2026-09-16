@@ -1,6 +1,6 @@
 .viewport {
   position: fixed;
-  z-index: 1000;
+  z-index: var(--z-toast, 9999);
   bottom: max(20px, env(safe-area-inset-bottom));
   left: 50%;
   width: min(430px, calc(100% - 32px));

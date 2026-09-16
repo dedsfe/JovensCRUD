@@ -5,6 +5,7 @@ import {
   useState,
 } from 'react'
 import type { PropsWithChildren } from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
   motionTransition,
@@ -63,48 +64,54 @@ export const ToastProvider: React.FC<PropsWithChildren> = ({ children }) => {
     [dismissToast, showToast, updateToast],
   )
 
+  const viewport = (
+    <div className={styles.viewport} aria-live="polite" aria-atomic="true">
+      <AnimatePresence initial={false} mode="wait">
+        {toast && (
+          <motion.div
+            key={toast.id}
+            className={styles.toast}
+            data-tone={toast.tone}
+            role={toast.tone === 'error' ? 'alert' : 'status'}
+            initial={reduceMotion ? false : { y: 12 }}
+            animate={{ y: 0 }}
+            exit={
+              reduceMotion
+                ? undefined
+                : {
+                    opacity: 0,
+                    y: 6,
+                    transition: motionTransition.exit,
+                  }
+            }
+            transition={
+              reduceMotion ? reducedMotionTransition : motionTransition.enter
+            }
+          >
+            <span className={styles.statusMark} aria-hidden="true" />
+            <span className={styles.message}>{toast.message}</span>
+            {toast.tone !== 'loading' && (
+              <button
+                className={styles.closeButton}
+                type="button"
+                aria-label="Fechar aviso"
+                onClick={() => dismissToast(toast.id)}
+              >
+                ×
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className={styles.viewport} aria-live="polite" aria-atomic="true">
-        <AnimatePresence initial={false} mode="wait">
-          {toast && (
-            <motion.div
-              key={toast.id}
-              className={styles.toast}
-              data-tone={toast.tone}
-              role={toast.tone === 'error' ? 'alert' : 'status'}
-              initial={reduceMotion ? false : { y: 12 }}
-              animate={{ y: 0 }}
-              exit={
-                reduceMotion
-                  ? undefined
-                  : {
-                      opacity: 0,
-                      y: 6,
-                      transition: motionTransition.exit,
-                    }
-              }
-              transition={
-                reduceMotion ? reducedMotionTransition : motionTransition.enter
-              }
-            >
-              <span className={styles.statusMark} aria-hidden="true" />
-              <span className={styles.message}>{toast.message}</span>
-              {toast.tone !== 'loading' && (
-                <button
-                  className={styles.closeButton}
-                  type="button"
-                  aria-label="Fechar aviso"
-                  onClick={() => dismissToast(toast.id)}
-                >
-                  ×
-                </button>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {typeof document !== 'undefined'
+        ? createPortal(viewport, document.body)
+        : viewport}
     </ToastContext.Provider>
   )
 }

@@ -47,8 +47,13 @@
   --shadow-control: 0 3px 8px rgba(0, 0, 0, 0.13);
   --shadow-overlay: 0 10px 30px rgba(0, 0, 0, 0.14);
   --shadow-media-mark: 0 3px 4px rgba(0, 0, 0, 0.18);
-  --shadow-text-on-image: 0 2px 12px rgba(0, 0, 0, 0.28);
   --focus-outline: rgba(0, 122, 255, 0.14);
+
+  /* Overlay hierarchy: toasts always float above everything */
+  --z-nav: 50;
+  --z-modal: 1000;
+  --z-alert: 1100;
+  --z-toast: 9999;
 
   /* Motion vocabulary. Components must use these instead of ad-hoc timings. */
   --motion-duration-instant: 90ms;
