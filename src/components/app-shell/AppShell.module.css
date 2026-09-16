@@ -107,18 +107,79 @@
 
 .account {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 44px;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
   align-items: center;
   margin-top: auto;
-  padding: 14px 6px 0;
+  padding: 14px 2px 0;
 }
 
-.avatar,
-.mobileHeader button span {
+.accountLink {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 8px;
+  color: var(--color-ink);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.accountLink:hover {
+  background: var(--color-surface-subtle);
+}
+
+.accountLinkActive {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 8px;
+  color: var(--color-ink);
+  text-decoration: none;
+  background: var(--color-blue-soft);
+  border-radius: var(--radius-md);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.accountLinkActive .accountCopy strong {
+  color: var(--color-blue);
+}
+
+.avatar {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  place-items: center;
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 750;
+  background: var(--color-surface-pressed);
+  border-radius: 50%;
+}
+
+.mobileAccountButton {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.mobileAccountButton:hover,
+.mobileAccountButton:active {
+  background: var(--color-surface-subtle);
+}
+
+.mobileAccountButton span {
+  display: grid;
+  width: 36px;
+  height: 36px;
   place-items: center;
   color: var(--color-ink);
   font-size: 12px;
@@ -150,8 +211,7 @@
   font-size: 11px;
 }
 
-.account button,
-.mobileHeader button {
+.account button {
   display: grid;
   width: 44px;
   height: 44px;

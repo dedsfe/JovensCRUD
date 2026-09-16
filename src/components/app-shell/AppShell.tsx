@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useToast } from '../toast/useToast'
@@ -6,6 +6,7 @@ import { authApi } from '../../features/auth/api/authApi'
 import { useAuth } from '../../features/auth/context/useAuth'
 import { getAuthErrorMessage } from '../../features/auth/helpers/authMessages'
 import { useYouths } from '../../features/youth/context/useYouths'
+import SignOutConfirmationDialog from '../../features/account/components/SignOutConfirmationDialog'
 import {
   motionTransition,
   reducedMotionTransition,
@@ -116,11 +117,17 @@ const AppShell: React.FC = () => {
     return { name, initials, email: user?.email ?? '' }
   }, [user])
 
-  const handleSignOut = useCallback(async (): Promise<void> => {
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleConfirmSignOut = useCallback(async (): Promise<void> => {
+    setIsLoggingOut(true)
     const toastId = showToast({ message: 'Saindo da sua conta...', tone: 'loading' })
     const { error } = await authApi.signOut()
 
     if (error) {
+      setIsLoggingOut(false)
+      setIsLogoutOpen(false)
       updateToast(toastId, { message: getAuthErrorMessage(error), tone: 'error' })
       return
     }
@@ -146,12 +153,26 @@ const AppShell: React.FC = () => {
         </nav>
 
         <div className={styles.account}>
-          <span className={styles.avatar} aria-hidden="true">{account.initials}</span>
-          <span className={styles.accountCopy}>
-            <strong>{account.name}</strong>
-            <small>{account.email}</small>
-          </span>
-          <button type="button" onClick={handleSignOut} aria-label="Sair da conta">
+          <NavLink
+            to="/conta"
+            className={({ isActive }) =>
+              isActive ? styles.accountLinkActive : styles.accountLink
+            }
+            aria-label="Ir para Minha Conta"
+            title="Minha Conta"
+          >
+            <span className={styles.avatar} aria-hidden="true">{account.initials}</span>
+            <span className={styles.accountCopy}>
+              <strong>{account.name}</strong>
+              <small>{account.email}</small>
+            </span>
+          </NavLink>
+          <button
+            type="button"
+            onClick={() => setIsLogoutOpen(true)}
+            aria-label="Sair da conta"
+            title="Sair da conta"
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
             </svg>
@@ -164,9 +185,14 @@ const AppShell: React.FC = () => {
           <img src="/images/umadeb-logo-transparent.png" alt="" />
           <span>UMADEB</span>
         </NavLink>
-        <button type="button" onClick={handleSignOut} aria-label="Sair da conta">
+        <NavLink
+          to="/conta"
+          className={styles.mobileAccountButton}
+          aria-label="Minha conta"
+          title="Minha conta"
+        >
           <span aria-hidden="true">{account.initials}</span>
-        </button>
+        </NavLink>
       </header>
 
       <main
@@ -180,6 +206,13 @@ const AppShell: React.FC = () => {
       <nav className={styles.bottomNavigation} aria-label="Navegação principal">
         <NavigationLinks scope="mobile" />
       </nav>
+
+      <SignOutConfirmationDialog
+        isOpen={isLogoutOpen}
+        isSigningOut={isLoggingOut}
+        onClose={() => setIsLogoutOpen(false)}
+        onConfirm={handleConfirmSignOut}
+      />
     </div>
   )
 }

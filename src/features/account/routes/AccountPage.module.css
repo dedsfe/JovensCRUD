@@ -1,0 +1,411 @@
+.page {
+  width: min(100%, 960px);
+  min-height: 100%;
+  margin-inline: auto;
+  padding: 46px clamp(20px, 5vw, 56px) 64px;
+  background: var(--color-canvas);
+}
+
+.header {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--text-display);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.header p {
+  margin: 10px 0 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+}
+
+.card {
+  padding: 24px 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-xl);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cardIcon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: var(--color-blue);
+  background: var(--color-blue-soft);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.cardIcon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.cardHeading {
+  display: grid;
+  gap: 2px;
+}
+
+.cardHeading h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.cardHeading p {
+  margin: 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+/* Overview Banner */
+.profileHero {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.largeAvatar {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  color: var(--color-ink);
+  font-size: 20px;
+  font-weight: 750;
+  background: var(--color-surface-pressed);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.profileHeroDetails {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.profileHeroDetails strong {
+  color: var(--color-ink);
+  font-size: 20px;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileHeroDetails span {
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.roleBadge,
+.statusBadge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  font-size: var(--text-xs);
+  font-weight: 650;
+  border-radius: var(--radius-sm);
+}
+
+.roleBadge {
+  color: var(--color-blue);
+  background: var(--color-blue-soft);
+}
+
+.statusBadge {
+  color: var(--color-success);
+  background: #edf8f0;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.infoList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.infoItem {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+}
+
+.infoItem dt {
+  color: var(--color-ink-tertiary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.infoItem dd {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 650;
+}
+
+/* Forms */
+.form {
+  display: grid;
+  gap: 18px;
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 6px;
+}
+
+.fieldGroup label {
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 650;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  color: var(--color-ink);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  transition: border-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.input:focus {
+  border-color: var(--color-blue);
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 1px;
+}
+
+.input:disabled,
+.input[readonly] {
+  color: var(--color-ink-secondary);
+  background: var(--color-surface-subtle);
+  cursor: not-allowed;
+}
+
+.fieldHint {
+  margin: 0;
+  color: var(--color-ink-tertiary);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--color-red);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: 680;
+  background: var(--color-blue);
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-control);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--color-blue-hover);
+}
+
+.saveButton:active:not(:disabled) {
+  background: var(--color-blue-pressed);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveButton:focus-visible {
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 2px;
+}
+
+/* Destructive Card */
+.destructiveCard {
+  border-color: #fbd5d5;
+}
+
+.destructiveHeader {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.destructiveInfo {
+  display: grid;
+  gap: 4px;
+}
+
+.destructiveInfo h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.destructiveInfo p {
+  margin: 0;
+  color: var(--color-ink-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.signOutButton {
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--color-red);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  background: var(--color-red-soft);
+  border: 1px solid #fecdd3;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.signOutButton:hover {
+  background: #ffe4e6;
+}
+
+.signOutButton:active {
+  background: #fecdd3;
+}
+
+.signOutButton:focus-visible {
+  outline: 3px solid rgba(215, 0, 21, 0.2);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 24px 16px 80px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .card {
+    padding: 18px 16px;
+  }
+
+  .profileHero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profileHeroDetails {
+    justify-items: center;
+  }
+
+  .badges {
+    justify-content: center;
+  }
+
+  .destructiveHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .signOutButton {
+    width: 100%;
+  }
+
+  .saveButton {
+    width: 100%;
+  }
+}

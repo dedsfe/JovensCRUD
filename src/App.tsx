@@ -15,6 +15,7 @@ const DashboardPage = lazy(
   () => import('./features/dashboard/routes/DashboardPage'),
 )
 const AccessPage = lazy(() => import('./features/access/routes/AccessPage'))
+const AccountPage = lazy(() => import('./features/account/routes/AccountPage'))
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/jovens" element={<YouthDirectoryPage />} />
               <Route path="/acessos" element={<AccessPage />} />
+              <Route path="/conta" element={<AccountPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
